@@ -1,0 +1,10 @@
+/mysql*
+
+COPYING
+CREDITS
+EXCEPTIONS-CLIENT
+mysql_installservice.bat
+mysql_uninstallservice.bat
+README.md
+resetroot.bat
+THIRDPARTY
