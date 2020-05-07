@@ -1,4 +1,4 @@
-/mysql*
+/mysql/
 
 COPYING
 CREDITS
@@ -8,3 +8,14 @@ mysql_uninstallservice.bat
 README.md
 resetroot.bat
 THIRDPARTY
+
+/backup/
+/docker-lamp/
+/.vim/
+/.ssh/
+/.cache/
+/mysql/sys/
+.bashrc
+.profile
+.bash_history
+.viminfo
