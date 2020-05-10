@@ -79,13 +79,13 @@
           <li class="nav-item">
             <a href="SalesEndUserRegistrationView.php" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
-              <p>Register Salesman</p>
+              <p>Register Salesperson</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="SalesIIEndUserRegistrationView.php" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
-              <p>Register Level II Salesman</p>
+              <p>Register SalespersonII</p>
             </a>
           </li>
           <li class="nav-item">
