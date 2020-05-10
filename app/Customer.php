@@ -1,16 +1,18 @@
 <?php
 include_once("User.php");
-class Sales extends User {
+class Customer extends User {
   // Properties
   public $user_id;
+  public $shop_name;
   public $first;
   public $last;
   public $phone_number;
   public $acitve;
   
   // Constructor for a sales object.
-  function __construct($user_id, $first, $last, $phone_number, $active){
+  function __construct($user_id, $shop_name, $first, $last, $phone_number, $active){
     $this->user_id = $user_id;
+    $this->shop_name = $shop_name;
     $this->first   = $first;
     $this->last   = $last;
     $this->phone_number   = $phone_number;
@@ -26,7 +28,16 @@ class Sales extends User {
   function getUserId() {
     return $this->user_id;
   }
+  
+  // Setter for shopname 
+  function setShopName($shop_name) {
+    $this->shop_name = $shop_name;
+  }
 
+  // Getter for shopname
+  function getShopName() {
+    return $this->shop_name;
+  }
   // Setter for first name 
   function setFirst($first) {
     $this->first = $first;

@@ -1,6 +1,6 @@
 <?php
 include_once("User.php");
-class Sales extends User {
+class SalesII extends User {
   // Properties
   public $user_id;
   public $first;

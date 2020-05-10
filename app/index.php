@@ -1,8 +1,6 @@
 <?php
   session_start();
- 
-  include 'dbconnection.php';
- 
+  include_once("Connection.php"); 
   $msg = "";
   
   if(isset($_POST['login'])){
@@ -11,9 +9,9 @@
     $password = sha1($password);
     $userType = $_POST['userType'];
     
-    $connection = connection::getInstance();
+    $connection = Connection::getInstance();
     $conn = $connection->getConn();
-    $sql = "SELECT * FROM `user` WHERE `username`=? AND `password`=? AND `user_type`=?";
+    $sql = "SELECT * FROM user WHERE username=? AND password=? AND user_type=?";
     $stmt=$conn->prepare($sql);
     $stmt->bind_param("sss", $username, $password, $userType);
     $stmt->execute();
@@ -21,24 +19,33 @@
     $row = $result->fetch_assoc();
     
     
-    $_SESSION['username'] = $row['username'];
-    $_SESSION['role'] = $row['user_type'];
-    $_SESSION['admin_id'] = $row['admin_id'];
-    $_SESSION['customer_id'] = $row['customer_id'];
-    $_SESSION['sales_ii_id'] = $row['sales_ii_id'];
-    $_SESSION['sales_id'] = $row['sales_id'];
-    $_SESSION['active'] = $row['active'];
+  
+    if(isset($row['username'], $row['user_type'], $row['active'])){
+      $_SESSION['username'] = $row['username'];
+      $_SESSION['role'] = $row['user_type'];
+      $_SESSION['active'] = $row['active'];
+    }
+    if(isset($row['admin_id'])){
+      $_SESSION['admin_id'] = $row['admin_id'];
+    }  
+    if(isset($row['customer_id'])){
+      $_SESSION['customer_id'] = $row['customer_id'];
+    }
+    if(isset($row['sales_ii_id'])){
+      $_SESSION['sales_ii_id'] = $row['sales_ii_id'];
+    }
+    if(isset($row['sales_id'])){
+      $_SESSION['sales_id'] = $row['sales_id'];
+    }
     
-    
-    
-    if($result->num_rows == 1 && $_SESSION['role'] == "admin" && $_SESSION['active'] > 0 ){
+    if($result->num_rows == 1 && $_SESSION['role'] == "Administrator" && $_SESSION['active'] > 0 ){
       header("location:AdminView.php");
-    } else if($result->num_rows == 1 && $_SESSION['role'] == "customer" && $_SESSION['active'] > 0){
+    } else if($result->num_rows == 1 && $_SESSION['role'] == "Customer" && $_SESSION['active'] > 0){
       header("location:CustomerView.php");
-    } else if($result->num_rows == 1 && $_SESSION['role'] == "sales_ii_id" && $_SESSION['active'] > 0){
-      header("location:SalesIIView.php");
-    } else if($result->num_rows == 1 && $_SESSION['role'] == "sales_id" && $_SESSION['active'] > 0){
-      header("location:Sales.php");
+    } else if($result->num_rows == 1 && $_SESSION['role'] == "SalesII" && $_SESSION['active'] > 0){
+      header("location:SalesPersonIIView.php");
+    } else if($result->num_rows == 1 && $_SESSION['role'] == "Sales" && $_SESSION['active'] > 0){
+      header("location:SalesPersonView.php");
     } else{
       $msg = "Username or Password is Incorrect!";
     }
@@ -79,9 +86,9 @@
       </div>
       <div class="form-group">
         <label for="UserType">I am a :</label>
-        <input type = "radio" name= "userType" value="admin" class="custom-radio" required>&nbsp;Admin  |
-        <input type = "radio" name= "userType" value="customer" class="custom-radio" required>&nbsp;Customer |
-        <input type = "radio" name= "userType" value="SalesII" class="custom-radio" required>&nbsp;Sales II
+        <input type = "radio" name= "userType" value="Administrator" class="custom-radio" required>&nbsp;Admin  |
+        <input type = "radio" name= "userType" value="Customer" class="custom-radio" required>&nbsp;Customer |
+        <input type = "radio" name= "userType" value="SalesII" class="custom-radio" required>&nbsp;Sales II |
         <input type = "radio" name= "userType" value="Sales" class="custom-radio" required>&nbsp;Sales
       </div>
       <div class="row d-flex justify-content-center">
@@ -91,7 +98,8 @@
         </div>
         <!-- /.col -->
       </div>
-      <h5 class="text-danger text-center"><?= $msg; ?></h5>
+      <br>
+      <h6 class="text-danger text-center"><?= $msg; ?></h6>
     </form>    
     <!-- /.social-auth-links -->
   </div>

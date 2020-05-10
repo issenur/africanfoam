@@ -1,7 +1,9 @@
 <?php
-include("sales.php");
-include("dbconnection.php");
-class test {
+include_once("UserModel.php");
+include("SalesII.php");
+include("SalesIIEndUser.php");
+include("Connection.php");
+class SalesIIModel extends UserModel {
  
   // Constructor for a sales object.
   function __construct(){
@@ -9,39 +11,38 @@ class test {
   }
   
   // Adds a sales object to database 
-  function addSales($salesObj) {
+  function addUser($userObject) {
     
-    $connection = dbconnection::getInstance();
+    $connection = Connection::getInstance();
     $conn = $connection->getConn();
     
     if ($conn->connect_error) {
       die("Connection failed: " . $conn->connect_error);
     }
-    $first = $salesObj->getFirst();
-    $last = $salesObj->getLast();
-    $phone_number = (int)$salesObj->getPhoneNumber();
+    $first = $userObject->getFirst();
+    $last = $userObject->getLast();
+    $phone_number = (int)$userObject->getPhoneNumber();
     
     $sql  = " INSERT INTO";
-    $sql .= "   sales(first, last, phone_number, active)";
+    $sql .= "   sales_ii(first, last, phone_number, active)";
     $sql .= " VALUES('$first', '$last', '$phone_number', 1)";
- 
-    
+  
     $stmt=$conn->prepare($sql);
-    $stmt->execute();
-    $result = $stmt->get_result();
     
-    
-    if(!$result){
-                return false;
-            }else{
-                return true;
-            }
+    if ($stmt->execute() === TRUE) {
+      $user_id = $conn->insert_id;
+    } else {
+      echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+  
+    return $user_id;
   }
-
+  
+ 
   // Retrieves a sales object from the database
-  function retrieveSales($sales_id) {
+  function retrieveUser($user_id) {
     
-    $connection = dbconnection::getInstance();
+    $connection = Connection::getInstance();
     $conn = $connection->getConn();
     
     if ($conn->connect_error) {
@@ -53,11 +54,11 @@ class test {
     $sql .= "   last,";
     $sql .= "   phone_number,";
     $sql .= "   active";
-    $sql .= " FROM sales";
-    $sql .= " WHERE sales_id=?";
+    $sql .= " FROM sales_ii";
+    $sql .= " WHERE sales_ii_id=?";
     
     $stmt=$conn->prepare($sql);
-    $stmt->bind_param("i", $sales_id);
+    $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
@@ -70,11 +71,9 @@ class test {
       $phone_number = $row['phone_number'];
       $active = $row['active'];
       
-      $salesObj = new sales($sales_id, $first, $last, $phone_number, $active);
-      return $salesObj;
+      $userObject = new SalesII($user_id, $first, $last, $phone_number, $active);
+      return $userObject;
     }
   }
 }
-
-
 ?>

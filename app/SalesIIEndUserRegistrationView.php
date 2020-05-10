@@ -1,13 +1,15 @@
-<?php
-  include_once("dbconnection.php");
+<?php   
+    session_start();
+    if(!isset($_SESSION['username']) || $_SESSION['role'] != "Administrator"){
+        header("location:index.php");
+    }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Testing Add Sales</title>
+  <title>African Foam Administrator</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -37,6 +39,9 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="logout.php" class="nav-link">Log out</a>
+      </li>
     </ul>
   </nav>
   <!-- /.navbar -->
@@ -44,9 +49,11 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="../../index3.html" class="brand-link">
-     
-      <span class="brand-text font-weight-light"></span>
+    <a href="https://www.africanfoam.com" class="brand-link">
+      <img src="../../dist/img/africanfoamlogo.jpg"
+           class="brand-image img-circle elevation-3"
+           style="opacity: .8">
+      <span class="brand-text font-weight-light">African Foam</span>
     </a>
 
     <!-- Sidebar -->
@@ -54,16 +61,22 @@
       <!-- Sidebar user (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-       
+          <img src="../../dist/img/defaultpic.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="#" class="d-block">Administrator</a>
         </div>
       </div>
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+           <li class="nav-item">
+            <a href="AdminView.php" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Admin Dashboard</p>
+            </a>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -76,17 +89,6 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>Add Sales</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Add Sales Test</li>
-            </ol>
-          </div>
-        </div>
       </div><!-- /.container-fluid -->
     </section>
 
@@ -95,58 +97,56 @@
       <div class="container-fluid">
         <div class="row">
           <!-- left column -->
-          <div class="col-md-12">
+          <div class="col-md-2">
+          </div>
+          <div class="col-md-8">
             <!-- general form elements -->
+            <div class="card card-warning">
+              <div class="card-header">
+                <h3 class="card-title">Salesperson II Registration Form</h3>
+              </div>
+              <!-- /.card-header -->
               <!-- form start -->
-              <form action="test_controller.php" id="sales_add_form" method="post">
+              <form id="sales_add_form"">
                 <div class="card-body">
-                  <div class="form-group col-md-12">
-                    <input type="text"  class="form-control" id="sales_form_username"  name="username" placeholder="ENTER USERNAME">
+                  <div class="form-group action="SalesIIEndUserRegistrationController.php" id="sales_add_form" method="post"">
+                    <label>Username</label>
+                    <input type="text"  class="form-control" id="sales_form_username"  name="username" placeholder="Username">
                   </div>
-                  <div class="form-group col-md-12">
-                    <input type="password"  class="form-control" id="sales_form_password" name="password" placeholder="ENTER PASSWORD">
+                  <div class="form-group">
+                    <label>Password</label>
+                     <input type="password"  class="form-control" id="sales_form_password" name="password" placeholder="Password">
                   </div>
-                  <div class="form-group col-md-12 " data-select2-id="29" id="sales_form_user_type" name="user_type" >  
-                    <?php
-                      $connection = dbconnection::getInstance();
-                      $conn = $connection->getConn();
-                      $sql = "SELECT DISTINCT user_type FROM user where user_type <> 'ADMINISTRATOR' order by user_type ASC";
-                      $result = $conn->query($sql);
-                      $n = 0;
-                      if ($result->num_rows > 0) {
-                        echo "<select class='form-control select2 select2-hidden-accessible' style='width: 100%;' data-select2-id='1' tabindex='-1' aria-hidden='true'>";
-                        echo "<option data-select2-id='$n'>". "SELECT USERTYPE" . "</option>";
-                        while($row = $result->fetch_assoc()) {
-                          $n = $n + 1;
-                          echo "<option data-select2-id='$n'>". $row['user_type']  . "</option>";
-                        }
-                          echo "</select>";
-                      } 
-                      $conn->close();
-                    ?>
+                  <div class="form-group">
+                    <label>First Name</label>
+                     <input type="text"  class="form-control" id="sales_form_first"  name="first" placeholder="First Name">
                   </div>
-                   <div class="form-group col-md-12">
-                    <input type="text"  class="form-control" id="sales_form_first"  name="first" placeholder="ENTER FIRST NAME">
+                  <div class="form-group">
+                    <label>Last Name</label>
+                     <input type="text"  class="form-control" id="sales_form_last" name="last" placeholder="Last Name">
                   </div>
-                  <div class="form-group col-md-12">
-                    <input type="text"  class="form-control" id="sales_form_last" name="last" placeholder="ENTER LAST NAME">
-                  </div>
-                  <div class="form-group col-md-12">
-                    <input type="text" class="form-control" id="sales_form_phone_number" name="phone_number" placeholder="ENTER PHONE NUMBER">
+                  <div class="form-group">
+                    <label>Phone Number</label>
+                     <input type="text" class="form-control" id="sales_form_phone_number" name="phone_number" placeholder="254xxxxxxxxx">
                   </div>
                 </div>
                 <!-- /.card-body -->
-                <div class="card-footer col-md-12">
-                  <button class="btn btn-primary" type="submit" name="submit" id="sales_form_submit">Submit</button>
-                  <br>
+
+                <div class="card-footer">
+                 <button class="btn btn-warning" type="submit" name="submit" id="sales_form_submit">Submit</button>
                   <br>
                   <br>
                   <p class="sales_form_message" name="message" > </p>
                 </div>
               </form>
             </div>
+            <!-- /.card -->
           </div>
           <!--/.col (left) -->
+          <!-- right column -->
+          <div class="col-md-2">
+          </div>
+          <!--/.col (right) -->
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -156,9 +156,10 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
-      <b></b> 
+      <b>Africanfoam App Version</b> 5.0
     </div>
-    <strong>
+     All rights
+    reserved.
   </footer>
 
   <!-- Control Sidebar -->
@@ -168,8 +169,7 @@
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
-<!-- Ajax -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 <!-- jQuery -->
 <script src="../../plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
@@ -192,16 +192,14 @@ $(document).ready(function () {
         
         var username = $("#sales_form_username").val();
         var password = $("#sales_form_password").val();
-        var user_type = $("#sales_form_user_type").val();
         var first = $("#sales_form_first").val();
         var last = $("#sales_form_last").val();
         var phone_number = $("#sales_form_phone_number").val();
         var message = $("#sales_form_message").val();
         var submit = $("#sales_form_submit").val();
-        $(".sales_form_message").load("test_controller.php", {
+        $(".sales_form_message").load("SalesIIEndUserRegistrationController.php", {
             username: username,
             password: password,
-            user_type: user_type,
             first: first,
             last: last,
             phone_number: phone_number,
@@ -210,7 +208,6 @@ $(document).ready(function () {
           });
       });
     });
-</script>
 </script>
 </body>
 </html>

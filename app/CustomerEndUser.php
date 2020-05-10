@@ -1,28 +1,30 @@
 <?php
-class salesuser {
+include_once("EndUser.php");
+class CustomerEndUser extends EndUser {
+  
   // Properties
   public $username;
   public $password;
-  public $sales;
+  public $user;
   public $user_type;
   public $acitve;
   
   // Constructor for a user object.
-  function __construct( $username, $password, $sales, $user_type, $active){
+  function __construct( $username, $password, $user, $user_type, $active){
     $this->username   = $username;
     $this->password   = $password;
-    $this->sales   = $sales;
-    $this->user_type   = $user_type;
-    $this->active   = $active;
+    $this->user       = $user;
+    $this->user_type  = $user_type;
+    $this->active     = $active;
   }
   
   // Setter for username name 
-  function setUserName($username) {
+  function setUsername($username) {
     $this->username = $username;
   }
 
   // Getter for username name
-  function getUserName() {
+  function getUsername() {
     return $this->username;
   }
   
@@ -35,14 +37,14 @@ class salesuser {
   function getPassword() {
     return $this->password;
   }
-  // Setter for sales object 
-  function setSales($sales) {
-    $this->sales = $sales;
+  // Setter for user object 
+  function setUser($user) {
+    $this->user = $user;
   }
 
-  // Getter for sales object
-  function getSales() {
-    return $this->sales;
+  // Getter for user object
+  function getUser() {
+    return $this->user;
   }
   
   // Setter for active 
