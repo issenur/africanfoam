@@ -42,8 +42,8 @@ if (isset($_POST['submit'])) {
       $errorPhoneNumber = true;
     }
     else {
-        $salesEndUserModel = new SalesEndUserModel();
-        $salesModel = new SalesModel();
+        $salesEndUserModel = SalesEndUserModel::getInstance();
+        $salesModel = SalesModel::getInstance();
         
         $tempSalesObject = new Sales(-1, $first, $last, $phone_number, 0);
         $sales_id = $salesModel->addUser($tempSalesObject);

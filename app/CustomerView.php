@@ -1,4 +1,6 @@
 <?php
+    include_once("CustomerModel.php");
+    include_once("Model.php");
     session_start();
     if(!isset($_SESSION['username']) || $_SESSION['role'] != "Customer"){
         header("location:index.php");
@@ -32,7 +34,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="../../index3.html" class="nav-link">Home</a>
+         <a href="#" class="nav-link">Home</a>
       </li>
     </ul>
 
@@ -63,7 +65,19 @@
           <img src="../../dist/img/defaultpic.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Ayan Adan</a>
+          <a href="#" class="d-block">
+            <?php
+             $model = Model::getInstance();
+             $user_id = $model->getCurrentUserId();
+             
+             $customerModel = CustomerModel::getInstance();
+             $customer = $customerModel->retrieveUser($user_id);
+             
+             $firstname = $customer->getFirst();
+             $lastname = $customer->getLast();
+             
+             echo $firstname . " " . $lastname;
+            ?>
         </div>
       </div>
 
@@ -116,8 +130,7 @@
     <div class="float-right d-none d-sm-block">
       <b>Africanfoam App Version</b> 5.0
     </div>
-     All rights
-    reserved.
+     Copyright © African Foam Limited 2020
   </footer>
 
   <!-- Control Sidebar -->

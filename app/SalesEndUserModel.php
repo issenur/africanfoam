@@ -6,10 +6,21 @@ include_once("EndUserModel.php");
 
 
 class SalesEndUserModel extends EndUserModel {
+  
+  //Field for singleton object
+  public static $instance = null;
  
   // Constructor for a sales object.
   function __construct(){
   
+  }
+  
+  //Applying singleton pattern to Sales End User Model   
+  public static function getInstance(){
+      if (self::$instance == null){
+        self::$instance = new SalesEndUserModel();
+      }
+      return self::$instance;
   }
   
   // Adds a sales user object to database 
@@ -76,6 +87,16 @@ class SalesEndUserModel extends EndUserModel {
       $endUserObject = new SalesEndUser($username, $password, $salesObject, $user_type, $active);
       return $endUserObject;
     }
+  }
+  
+  //Validates enduser's credentials 
+  function deactivateEndUser($username) {
+    parent::deactivateEndUser($username);
+  }
+  
+  //Invalidates enduser's credentials 
+  function activateEndUser($username) {
+    parent::activateEndUser($username);
   }
 }
 ?>

@@ -107,22 +107,22 @@
                     <input type="password"  class="form-control" id="sales_form_password" name="password" placeholder="ENTER PASSWORD">
                   </div>
                   <div class="form-group col-md-12 " data-select2-id="29" id="sales_form_user_type" >  
-                    <?php
-                      $connection = dbconnection::getInstance();
-                      $conn = $connection->getConn();
-                      $sql = "SELECT DISTINCT user_type FROM user where user_type <> 'ADMINISTRATOR' order by user_type ASC";
-                      $result = $conn->query($sql);
-                     
-                      if ($result->num_rows > 0) {
-                        echo "<select  id='sales_form_user_type'>";
-                        echo "<option value='choose'> ". "---Choose User Type---" . "</option>";
-                        while($row = $result->fetch_assoc()) {
-                          echo "<option value=" . $row['username'] . ">" . $row['user_type'] . "</option>";
-                        }
-                          echo "</select>";
-                      } 
-                      $conn->close();
-                    ?>
+                     <?php
+                            $connection = Connection::getInstance();
+                            $conn = $connection->getConn();
+                            $sql = "SELECT * FROM customer ORDER by first ASC";
+                            $result = $conn->query($sql);
+                            
+                            if ($result->num_rows > 0) {
+                              echo "<select  id='customer_form'>";
+                              echo "<option value='choose'> ". "---Select Customer---" . "</option>";
+                              while($row = $result->fetch_assoc()) {
+                                echo "<option value=" . $row['customer_id'] . ">" . $row['shop_name'] . "</option>";
+                              }
+                            echo "</select>";
+                            } 
+                            $conn->close();
+                          ?>
                   </div>
                    <div class="form-group col-md-12">
                     <input type="text"  class="form-control" id="sales_form_first"  name="first" placeholder="ENTER FIRST NAME">

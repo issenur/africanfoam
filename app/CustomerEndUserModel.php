@@ -4,12 +4,22 @@ include_once("CustomerModel.php");
 include_once("CustomerEndUser.php");
 include_once("EndUserModel.php");
 
-
 class CustomerEndUserModel extends EndUserModel {
- 
+  
+  //Field for singleton object
+  public static $instance = null;
+  
   // Constructor for a customer object.
   function __construct(){
   
+  }
+  
+  //Applying singleton pattern to Customer End User Model   
+  public static function getInstance(){
+      if (self::$instance == null){
+        self::$instance = new CustomerEndUserModel();
+      }
+      return self::$instance;
   }
   
   // Adds a customer user object to database 
@@ -28,14 +38,13 @@ class CustomerEndUserModel extends EndUserModel {
     $customer_id = $user->getUserId();
     $user_type = $endUser->getUserType();
     
-    
     $sql  = " INSERT INTO";
     $sql .= "   user(username, password, admin_id, customer_id, sales_ii_id, sales_id , user_type, active)";
     $sql .= " VALUES('$user_name', SHA1('$password'), NULL, '$customer_id', NULL, NULL, '$user_type' , 1)";
  
     $stmt=$conn->prepare($sql);
     $stmt->execute();
-  
+   
   }
   
   //Retrieve an end user object to database 
@@ -61,7 +70,7 @@ class CustomerEndUserModel extends EndUserModel {
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
-    
+    $conn->close();
     if (!$result) {
       trigger_error('Invalid query: ' . $conn->error);
     }else{
@@ -74,8 +83,19 @@ class CustomerEndUserModel extends EndUserModel {
       $active = $row['active'];
       
       $endUserObject = new CustomerEndUser($username, $password, $customerObject, $user_type, $active);
+      
       return $endUserObject;
     }
+  }
+  
+  //Validates enduser's credentials 
+  function deactivateEndUser($username) {
+    parent::deactivateEndUser($username);
+  }
+  
+  //Invalidates enduser's credentials 
+  function activateEndUser($username) {
+    parent::activateEndUser($username);
   }
 }
 ?>

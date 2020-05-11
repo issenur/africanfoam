@@ -1,11 +1,10 @@
 <?php
-    
+    include_once("SalesModel.php");
+    include_once("Model.php");
     session_start();
     if(!isset($_SESSION['username']) || $_SESSION['role'] != "Sales"){
         header("location:index.php");
     }
-    
-   
     
 ?>
 <!DOCTYPE html>
@@ -36,7 +35,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="../../index3.html" class="nav-link">Home</a>
+        <a href="#">Home</a>
       </li>
     </ul>
 
@@ -67,7 +66,21 @@
           <img src="../../dist/img/defaultpic.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Guled Haji</a>
+         
+          <a href="#" class="d-block">
+            <?php
+             $model = Model::getInstance();
+             $user_id = $model->getCurrentUserId();
+             
+             $salesModel = SalesModel::getInstance();
+             $sales = $salesModel->retrieveUser($user_id);
+             
+             $firstname = $sales->getFirst();
+             $lastname = $sales->getLast();
+             
+             echo $firstname . " " . $lastname;
+            ?>
+          </a>
         </div>
       </div>
 
@@ -78,6 +91,12 @@
             <a href="SalesPersonView.php" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
               <p>Salesman Dashboard</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="InvoiceAddView.php" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Create Invoice</p>
             </a>
           </li>
         </ul>

@@ -1,13 +1,24 @@
 <?php
 include_once("UserModel.php");
-include("Sales.php");
-include("SalesEndUser.php");
-include("Connection.php");
+include_once("Sales.php");
+include_once("SalesEndUser.php");
+include_once("Connection.php");
 class SalesModel extends UserModel {
  
   // Constructor for a sales object.
-  function __construct(){
+  private function __construct() {
   
+  }
+  
+  //Field for singleton object 
+  public static $instance = null;
+  
+  //Applying singleton pattern to Sales Model   
+  public static function getInstance(){
+      if (self::$instance == null){
+        self::$instance = new SalesModel();
+      }
+      return self::$instance;
   }
   
   // Adds a sales object to database 

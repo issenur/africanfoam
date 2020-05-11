@@ -162,8 +162,7 @@
     <div class="float-right d-none d-sm-block">
       <b>Africanfoam App Version</b> 5.0
     </div>
-     All rights
-    reserved.
+    Copyright © African Foam Limited 2020
   </footer>
 
   <!-- Control Sidebar -->

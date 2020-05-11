@@ -48,8 +48,9 @@ if (isset($_POST['submit'])) {
       $errorPhoneNumber = true;
     }
     else {
-        $customerEndUserModel = new CustomerEndUserModel();
-        $customerModel = new CustomerModel();
+        
+        $customerEndUserModel = CustomerEndUserModel::getInstance();
+        $customerModel = CustomerModel::getInstance();
         
         $tempCustomerObject = new Customer(-1, $shop_name, $first, $last, $phone_number, 0);
         $customer_id = $customerModel->addUser($tempCustomerObject);
@@ -57,7 +58,7 @@ if (isset($_POST['submit'])) {
    
         $customerEndUserObject = new CustomerEndUser($username, $password, $customerObject, $user_type, 1);
         $customerEndUserModel->addEndUser($customerEndUserObject);
-        echo "<span class='text-success'>Customer person successfully added</span>";    
+        echo "<span class='text-success'>Customer successfully added</span>";    
     }
 }
 else {
@@ -88,6 +89,6 @@ else {
         $("#sales_form_phone_number").addClass("form-control is-invalid");
     }
     if((errorUsername == false) && (errorPassword == false) && (errorPhoneNumber == false) &&(errorEmpty == false)){
-      $("#sales_form_username, #sales_form_password, #sales_form_first, #sales_form_last, #sales_form_phone_number").val("");
+      $("#sales_form_username, #sales_form_password, #sales_form_shop_name, #sales_form_first, #sales_form_last, #sales_form_phone_number").val("");
     }
 </script>

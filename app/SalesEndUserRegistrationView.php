@@ -32,7 +32,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="../../index3.html" class="nav-link">Home</a>
+        <a href="#">Home</a>
       </li>
     </ul>
 
@@ -158,8 +158,7 @@
     <div class="float-right d-none d-sm-block">
       <b>Africanfoam App Version</b> 5.0
     </div>
-     All rights
-    reserved.
+    Copyright © African Foam Limited 2020
   </footer>
 
   <!-- Control Sidebar -->

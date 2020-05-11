@@ -1,4 +1,5 @@
 <?php
+    include_once("Connection.php");
     session_start();
     if(!isset($_SESSION['username']) || $_SESSION['role'] != "Administrator"){
         header("location:index.php");
@@ -32,7 +33,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="../../index3.html" class="nav-link">Home</a>
+        <a href="#" class="nav-link">Home</a>
       </li>
     </ul>
 
@@ -85,13 +86,19 @@
           <li class="nav-item">
             <a href="SalesIIEndUserRegistrationView.php" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
-              <p>Register SalespersonII</p>
+              <p>Register Salesperson II</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="CustomerEndUserRegistrationView.php" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Register Customer</p>
+            </a>
+          </li>
+           <li class="nav-item">
+            <a href="MattressAddView.php" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Add Mattress</p>
             </a>
           </li>
         </ul>
@@ -112,18 +119,180 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        <div class="row">
-          <!-- left column -->
-          <div class="col-md-2">
-          </div>
-          <div class="col-md-8">
-          </div>
-          <!--/.col (left) -->
-          <!-- right column -->
-          <div class="col-md-2">
-          </div>
-          <!--/.col (right) -->
-        </div>
+        <div class="row mb-2">
+                    <div class="col-sm-12">
+                        <h1>Active Users</h1>
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Acc Type</th>
+                                    <th>ID#</th>
+                                    <th>Username</th>
+                                    <th>First</th>
+                                    <th>Last</th>
+                                    <th>Action</th>
+
+                                </tr>
+                            </thead>
+                            <?php
+                                  $connection = Connection::getInstance();
+                                  $conn = $connection->getConn();
+                                
+                                
+                                if ($conn->connect_error) {
+                                    die("Connection failed: " . $conn->connect_error);
+                                }
+                                
+                                $sql  = "select";
+                                $sql .=     "`user`.`username` as `username`,";
+                                $sql .=     "`user`.`customer_id` as `customer_id`,";                                
+                                $sql .=     "`user`.`sales_ii_id` as `sales_ii_id`,";
+                                $sql .=     "`user`.`sales_id` as `sales_id`,";
+                                $sql .=     "`user`.`user_type` as `user_type`,";
+                                $sql .=     "`customer`.`first` as `dfirst`,";
+                                $sql .=     "`customer`.`last` as `dlast`,";
+                                $sql .=     "`sales_ii`.`first` as `pfirst`,";
+                                $sql .=     "`sales_ii`.`last` as `plast`,";
+                                $sql .=     "`sales`.`first` as `cfirst`,";
+                                $sql .=     "`sales`.`last` as `clast`";
+                                $sql .= " from `user`";
+                                $sql .= " left join `customer` on (`customer`.`customer_id` = `user`.`customer_id`)";
+                                $sql .= " left join `sales_ii` on (`sales_ii`.`sales_ii_id` = `user`.`sales_ii_id`)";
+                                $sql .= " left join `sales` on (`sales`.`sales_id` = `user`.`sales_id`)";
+                                $sql .= " where `user`.`active` = 1";
+                                $sql .= " order by `user`.`user_type` ASC";
+                                $result = $conn->query($sql);
+                                echo "<id='example2'>";
+                                echo "<tbody>";
+                                if ($result->num_rows > 0) {
+                                    while($row = $result->fetch_assoc()) {
+                                        echo "<tr>";
+                                        
+                                        if(!($row['customer_id'] == NULL)){
+                                            echo "<td>Customer</td>";
+                                            echo "<td>" . $row['customer_id'] . "</td>";
+                                            echo "<td>" . $row['username'] . "</td>";
+                                            echo "<td>" . $row['dfirst'] . "</td>";
+                                            echo "<td>" . $row['dlast'] . "</td>";
+                                            echo"<td>";
+                                            echo "<a href ='AdminViewController.php?delete_customer=".  $row['username'] ."'><button class='btn btn-danger'>Deactivate</button>"."<a/>";
+                                            echo "</td>"; 
+                                        }else if(!($row['sales_ii_id'] == NULL)){
+                                            echo "<td>Sales II</td>";
+                                            echo "<td>" . $row['sales_ii_id'] . "</td>";
+                                            echo "<td>" . $row['username'] . "</td>";
+                                            echo "<td>" . $row['pfirst'] . "</td>";
+                                            echo "<td>" . $row['plast'] . "</td>";
+                                            echo"<td>";
+                                            echo "<a href ='AdminViewController.php?delete_sales_ii=". $row['username']."'><button class='btn btn-danger'>Deactivate</button>"."<a/>";
+                                            echo "</td>"; 
+                                        }else{
+                                            echo "<td> Sales </td>";
+                                            echo "<td>" . $row['sales_id'] . "</td>";
+                                            echo "<td>" . $row['username'] . "</td>";
+                                            echo "<td>" . $row['cfirst'] . "</td>";
+                                            echo "<td>" . $row['clast'] . "</td>";
+                                            echo"<td>";
+                                            echo "<a href ='AdminViewController.php?delete_sales=".  $row['username'] ."'><button class='btn btn-danger'>Deactivate</button>"."<a/>";
+                                            echo "</td>"; 
+                                        } 
+                                        echo "</tr>";
+                                    }
+                                    echo "</tbody>";
+                                    echo "</table>";
+                                } else {
+                                    echo "</tbody>";
+                                    echo "</table>";
+                                    echo "<h6>ACTIVATED USERS TABLE IS EMPTY</h6>";
+                                }
+                            ?>
+                            
+                        <h1>Inactive Users</h1>
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Acc Type</th>
+                                    <th>ID#</th>
+                                    <th>Username</th>
+                                    <th>First</th>
+                                    <th>Last</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <?php
+                            
+                                $connection = Connection::getInstance();
+                                $conn = $connection->getConn();
+                                
+                                if ($conn->connect_error) {
+                                    die("Connection failed: " . $conn->connect_error);
+                                }
+                                
+                                $sql  = "select";
+                                $sql .=     "`user`.`username` as `username`,";
+                                $sql .=     "`user`.`customer_id` as `customer_id`,";                                
+                                $sql .=     "`user`.`sales_ii_id` as `sales_ii_id`,";
+                                $sql .=     "`user`.`sales_id` as `sales_id`,";
+                                $sql .=     "`user`.`user_type` as `user_type`,";
+                                $sql .=     "`customer`.`first` as `dfirst`,";
+                                $sql .=     "`customer`.`last` as `dlast`,";
+                                $sql .=     "`sales_ii`.`first` as `pfirst`,";
+                                $sql .=     "`sales_ii`.`last` as `plast`,";
+                                $sql .=     "`sales`.`first` as `cfirst`,";
+                                $sql .=     "`sales`.`last` as `clast`";
+                                $sql .= " from `user`";
+                                $sql .= " left join `customer` on (`customer`.`customer_id` = `user`.`customer_id`)";
+                                $sql .= " left join `sales_ii` on (`sales_ii`.`sales_ii_id` = `user`.`sales_ii_id`)";
+                                $sql .= " left join `sales` on (`sales`.`sales_id` = `user`.`sales_id`)";
+                                $sql .= " where `user`.`active` = 0";
+                                $sql .= " order by `user`.`user_type` ASC";
+                                $result = $conn->query($sql);
+                                echo "<id='example2'>";
+                                echo "<tbody>";
+                                if ($result->num_rows > 0) {
+                                    while($row = $result->fetch_assoc()) {
+                                        echo "<tr>";
+                                        if(!($row['customer_id'] == NULL)){
+                                            echo "<td> Customer </td>";
+                                            echo "<td>" . $row['customer_id'] . "</td>";
+                                            echo "<td>" . $row['username'] . "</td>";
+                                            echo "<td>" . $row['dfirst'] . "</td>";
+                                            echo "<td>" . $row['dlast'] . "</td>";
+                                            echo"<td>";
+                                            echo "<a href ='AdminViewController.php?activate_customer=".  $row['username'] ."'><button class='btn btn-success' style='width: 100px' >Activate</button>"."<a/>";
+                                            echo "</td>"; 
+                                        }else if(!($row['sales_ii_id'] == NULL)){
+                                            echo "<td>Sales II</td>";
+                                            echo "<td>" . $row['sales_ii_id'] . "</td>";
+                                            echo "<td>" . $row['username'] . "</td>";
+                                            echo "<td>" . $row['pfirst'] . "</td>";
+                                            echo "<td>" . $row['plast'] . "</td>";
+                                            echo"<td>";
+                                            echo "<a href ='AdminViewController.php?activate_sales_ii=". $row['username']."'><button class='btn btn-success' style='width: 100px'>Activate</button>"."<a/>";
+                                            echo "</td>"; 
+                                        }else{
+                                            echo "<td> Sales </td>";
+                                            echo "<td>" . $row['sales_id'] . "</td>";
+                                            echo "<td>" . $row['username'] . "</td>";
+                                            echo "<td>" . $row['cfirst'] . "</td>";
+                                            echo "<td>" . $row['clast'] . "</td>";
+                                            echo"<td>";
+                                            echo "<a href ='AdminViewController.php?activate_sales=".  $row['username'] ."'><button class='btn btn-success' style='width: 100px'>Activate</button>"."<a/>";
+                                            echo "</td>"; 
+                                        } 
+                                        echo "</tr>";
+                                    }
+                                    echo "</tbody>";
+                                    echo "</table>";
+                                } else {
+                                    echo "</tbody>";
+                                    echo "</table>";
+                                    echo "<h6>DEACTIVATED USERS TABLE IS EMPTY</h6>";
+                                }
+                                $conn->close();
+                            ?>
+                    </div>
+                </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
     </section>
@@ -134,8 +303,7 @@
     <div class="float-right d-none d-sm-block">
       <b>Africanfoam App Version</b> 5.0
     </div>
-     All rights
-    reserved.
+    Copyright © African Foam Limited 2020
   </footer>
 
   <!-- Control Sidebar -->

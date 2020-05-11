@@ -43,7 +43,7 @@
     } else if($result->num_rows == 1 && $_SESSION['role'] == "Customer" && $_SESSION['active'] > 0){
       header("location:CustomerView.php");
     } else if($result->num_rows == 1 && $_SESSION['role'] == "SalesII" && $_SESSION['active'] > 0){
-      header("location:SalesPersonIIView.php");
+      header("location:SalesIIPersonView.php");
     } else if($result->num_rows == 1 && $_SESSION['role'] == "Sales" && $_SESSION['active'] > 0){
       header("location:SalesPersonView.php");
     } else{

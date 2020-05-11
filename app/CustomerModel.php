@@ -1,13 +1,25 @@
 <?php
+include_once("Connection.php");
 include_once("UserModel.php");
 include("Customer.php");
 include("CustomerEndUser.php");
-include("Connection.php");
+
 class CustomerModel extends UserModel {
- 
+  
+  //Field for singleton object
+  public static $instance = null;
+  
   // Constructor for a customer object.
   function __construct(){
   
+  }
+  
+  //Applying singleton pattern to Customer Model   
+  public static function getInstance(){
+      if (self::$instance == null){
+        self::$instance = new CustomerModel();
+      }
+      return self::$instance;
   }
   
   // Adds a customer object to database 
@@ -74,7 +86,7 @@ class CustomerModel extends UserModel {
       $phone_number = $row['phone_number'];
       $active = $row['active'];
       
-      $userObject = new Customer($user_id, $first, $last, $shop_name, $phone_number, $active);
+      $userObject = new Customer($user_id, $shop_name, $first, $last, $phone_number, $active);
       return $userObject;
     }
   }
