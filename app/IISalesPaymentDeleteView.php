@@ -1,11 +1,20 @@
 <?php
+    include_once("Invoice.php");
+    include_once("InvoiceModel.php");
     include_once("CustomerModel.php");
+    include_once("CostModel.php");
+    include_once("PaymentModel.php");
     include_once("Model.php");
-    include_once("Account.php");
-    include_once("AccountModel.php");
+    include_once("IISalesModel.php");
+    
     session_start();
-    if(!isset($_SESSION['username']) || $_SESSION['role'] != "Customer"){
+    if(!isset($_SESSION['username']) || $_SESSION['role'] != "IISales"){
         header("location:index.php");
+    }
+
+    if(isset($_GET['view_invoice'])){
+        $invoice_id = $_GET['view_invoice'];
+        $_SESSION['invoice_id'] = $_GET['view_invoice'];
     }
 ?>
 <!DOCTYPE html>
@@ -68,15 +77,18 @@
         </div>
         <div class="info">
           <a href="#" class="d-block">
-            <?php
+             <?php
+             $connection = Connection::getInstance();
+             $conn = $connection->getConn();
+             
              $model = new Model();
              $user_id = $model->getCurrentUserId();
              
-             $customerModel = CustomerModel::getInstance();
-             $customer = $customerModel->retrieveUser($user_id);
+             $salesModel = IISalesModel::getInstance();
+             $sales = $salesModel->retrieveUser($user_id);
              
-             $firstname = $customer->getFirst();
-             $lastname = $customer->getLast();
+             $firstname = $sales->getFirst();
+             $lastname = $sales->getLast();
              
              echo $firstname . " " . $lastname;
             ?>
@@ -84,16 +96,18 @@
       </div>
 
       <!-- Sidebar Menu -->
+      <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <li class="nav-item">
-            <a href="CustomerView.php" class="nav-link active">
+            <a href="IISalesPersonView.php" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
-              <p>Customer Dashboard</p>
+              <p>Sales Manager Dashboard</p>
             </a>
           </li>
         </ul>
       </nav>
+      <!-- /.sidebar-menu -->
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
@@ -101,73 +115,70 @@
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-      </div><!-- /.container-fluid -->
-    </section>
-
-    <!-- Main content -->
-    <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-12">
+        <!-- Content Header (Page header) -->
+        <section class="content-header" style="padding: 0px 0px 0px 0px" >
+            <div class="container-fluid " style="padding: 0px 0px 0px 0px" >
+                <div class ="row" style="padding: 20px 20px 0px 20px">
+                     <div class="col">
+                        <h1>Invoice#
+                        <?php
+                            $invoice_id = $_SESSION['invoice_id'];
+                            echo (int)$invoice_id;
+                        ?>
+                        </h1>
+                    </div>
+                </div>
+                <div class="row pl-5" style="min-height:62vh" style="min-width:100vw" >
+                    <div class= "col" style="min-height:62vh" style="min-width:100vw" >
+                      <div class="row pl-5" style="min-height:46vh" style="min-width:100vw" >            
                        <table id="example2" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th>Invoice#</th>
-                                    <th>Details</th>
-                                    <th>Invoice Total</th>
-                                    <th>Total Paid</th>
-                                    <th>Outstanding Bal.</th>
-                                    <th>Sales Person</th>
-                                    <th>Purchase Date</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                    <th>Date</th>
                                 </tr>
                             </thead>
                             <?php
-                                $accountModel = AccountModel::getInstance();
-                                $account = $accountModel->retrieveAccount($user_id);
-
-                                
-                                $costModel = CostModel::getInstance();
+                                $invoiceModel = InvoiceModel::getInstance();
+                                $invoice = $invoiceModel->retrieveInvoice($invoice_id);
                                 $paymentModel = PaymentModel::getInstance();
+                                $paymentCollection = $invoice->getPaymentCollection();
+                                $paymentModel = PaymentModel::getInstance();
+                                
                                 
 
                                 echo "<id='example2'>";
                                 echo "<tbody>";
-                                if (!($account == null)) {
-                                    $invoiceCollection = $account->getInvoiceCollection();
-                                    while(!$invoiceCollection->isEmpty()) {
-                                        $invoice = $invoiceCollection->extract();
-                                        $invoice_id = $invoice->getInvoiceId();
-                                        $dateTime = $invoice->getDate();
+                                if (!($paymentCollection == null)) {
+                                    
+                                    while(!$paymentCollection->isEmpty()) {
+                                        $payment = $paymentCollection->extract();
+                                        
+                                        $amount = $payment->getAmount();
+                                        $amountF = number_format($amount, 2, '.', ',');
+                                       
+                                        $dateTime = $payment->getDate();
                                         $date1 = new DateTime($dateTime);
-                                        $date = $date1->format('d-M-Y');
-                                        $sales = $invoice->getSales();
-                                        $salesFirst = $sales->getFirst();
-                                        $salesLast = $sales->getLast();
-                                        $costCollection = $invoice->getCostCollection();
-                                        $totalCost = $costModel->getTotalCost($costCollection);
-                                        $totalCostF = number_format(abs($totalCost), 2, '.', ',');
-                                        $paymentCollection = $invoice->getPaymentCollection();
-                                        $totalPayment = $paymentModel->getTotalPayment($paymentCollection);
-                                        $totalPaymentF = number_format($totalPayment, 2, '.', ',');
-                                        $grandTotal = $totalPayment + $totalCost;
-                                        $grandTotalF = number_format($grandTotal, 2, '.', ',');
+                                        $date = $date1->format('Y-M-d');
+                                        
+                                        $sales = $payment->getSales();
+                                        $sales_id = $sales->getUserId();
+                                        
+
+
                                         echo "<tr>";
-                                        echo "<td>" .$invoice_id. "</td>";
-                                        echo"<td>";
-                                        echo "<a href ='InvoiceDetailView.php?view_invoice=".  $invoice_id  ."'><button class='btn btn-dark'>Details</button>"."<a/>";
+                                        echo "<td>" . $invoice_id . "</td>";
+                                        echo "<td>". "Ksh ". $amountF . "</td>";
+                                        
+
+                                        $items = array($invoice_id, $amount, $sales_id, $dateTime);
+                                        $Text = json_encode($items);
+                                        $RequestText = urlencode($Text);
+                                        echo "<td>";
+                                        echo "<a href ='IISalesPDTwoView.php?view_invoice=".  $RequestText ."'><button class='btn btn-primary'>Delete Invoice Item</button>"."<a/>";
                                         echo "</td>";
-                                        echo "<td> Ksh " . $totalCostF . "</td>";
-                                        echo "<td> Ksh " . $totalPaymentF . "</td>";
-                                        if(($grandTotalF) < 0){
-                                          echo "<td style='color:red'  > Ksh " . $grandTotalF . "</td>";
-                                        }else{
-                                          echo "<td style='color:green'> Ksh " . $grandTotalF . "</td>";
-                                        }
-                                        echo "<td>" . $salesFirst . " " . $salesLast . "</td>";
                                         echo "<td>" . $date . "</td>";
                                         echo "</tr>";
                                     }
@@ -179,41 +190,9 @@
                                     echo "<h4>CUSTOMER HAS ZERO INVOICES</h4>";
                                 }
                             ?>
-                    </div>
+                      </div>
                 </div>
-                <div class="row mb-2">
-                    
-                            <?php
-                              if (!($account == null)) {
-                                $accountBalance = $account->getAccountBalance();
-                                $accountBalanceF = number_format($accountBalance, 2, '.', ',');
-                                if($accountBalance < 0) {
-                                  echo "<div class='col-sm-4-auto'> Account Balance: ksh</div>";
-                                  echo "<div class='col-sm-8'><p style='color:red'> " . $accountBalanceF ."</p></div>";
-                                }else{
-                                  echo "<div class='col-sm-4-auto'> Account Balance: ksh</div>";
-                                  echo "<div class='col-sm-8'><p style='color:green'> " . $accountBalanceF ."</p></div>";
-                                }
-                              }else{
-                                echo "<p>Account Balance: ksh 0 </br></p>";
-                              }
-                            ?>
-                  
-                </div>
-            </div>
-            <!-- /.container-fluid -->
-        </section>
-    <!-- /.content -->
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
-  <footer class="main-footer">
-    <div class="float-right d-none d-sm-block">
-      <b>Africanfoam App Version</b> 5.0
-    </div>
-     Copyright © African Foam Limited 2020
-  </footer>
-
+  
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
     <!-- Control sidebar content goes here -->
@@ -263,3 +242,4 @@ $(document).ready(function () {
 </script>
 </body>
 </html>
+

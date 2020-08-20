@@ -1,9 +1,20 @@
 <?php
-    include_once("SalesIIModel.php");
+    include_once("Invoice.php");
+    include_once("InvoiceModel.php");
+    include_once("CustomerModel.php");
+    include_once("CostModel.php");
+    include_once("PaymentModel.php");
     include_once("Model.php");
+    include_once("IISalesModel.php");
+    
     session_start();
-    if(!isset($_SESSION['username']) || $_SESSION['role'] != "SalesII"){
+    if(!isset($_SESSION['username']) || $_SESSION['role'] != "IISales"){
         header("location:index.php");
+    }
+
+    if(isset($_GET['view_invoice'])){
+        $invoice_id = $_GET['view_invoice'];
+        $_SESSION['invoice_id'] = $_GET['view_invoice'];
     }
 ?>
 <!DOCTYPE html>
@@ -11,7 +22,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>African Foam SalesII</title>
+  <title>African Foam Customer</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -34,7 +45,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="#">Home</a>
+         <a href="#" class="nav-link">Home</a>
       </li>
     </ul>
 
@@ -66,33 +77,37 @@
         </div>
         <div class="info">
           <a href="#" class="d-block">
-            <?php
-             $model = Model::getInstance();
+             <?php
+             $connection = Connection::getInstance();
+             $conn = $connection->getConn();
+             
+             $model = new Model();
              $user_id = $model->getCurrentUserId();
              
-             $salesIIModel = SalesIIModel::getInstance();
-             $salesII = $salesIIModel->retrieveUser($user_id);
+             $salesModel = IISalesModel::getInstance();
+             $sales = $salesModel->retrieveUser($user_id);
              
-             $firstname = $salesII->getFirst();
-             $lastname = $salesII->getLast();
+             $firstname = $sales->getFirst();
+             $lastname = $sales->getLast();
              
              echo $firstname . " " . $lastname;
             ?>
-          </a>
         </div>
       </div>
 
       <!-- Sidebar Menu -->
+      <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <li class="nav-item">
-            <a href="SalesPersonIIView.php" class="nav-link active">
+            <a href="IISalesPersonView.php" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
-              <p>Salesman II Dashboard</p>
+              <p>Sales Manager Dashboard</p>
             </a>
           </li>
         </ul>
       </nav>
+      <!-- /.sidebar-menu -->
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
@@ -100,41 +115,36 @@
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-      </div><!-- /.container-fluid -->
-    </section>
-
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <!-- left column -->
-          <div class="col-md-2">
-          </div>
-          <div class="col-md-8">
-          </div>
-          <!--/.col (left) -->
-          <!-- right column -->
-          <div class="col-md-2">
-          </div>
-          <!--/.col (right) -->
-        </div>
-        <!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
-  <footer class="main-footer">
-    <div class="float-right d-none d-sm-block">
-      <b>Africanfoam App Version</b> 5.0
-    </div>
-     All rights
-    reserved.
-  </footer>
-
+        <!-- Content Header (Page header) -->
+        <section class="content-header" style="padding: 0px 0px 0px 0px" >
+            <div class="container-fluid " style="padding: 0px 0px 0px 0px" >
+                <div class ="row" style="padding: 20px 20px 0px 20px">
+                    <div class="col">
+                        <h1>Invoice#
+                        <?php
+                            $invoice_id = $_SESSION['invoice_id'];
+                            echo (int)$invoice_id;
+                        ?>
+                        </h1>
+                    </div>
+                   <div class ="col-auto">
+                        <a class="btn btn-app"  href ="IISalesInvoiceDeleteView.php?button_delete=<?php echo $invoice_id?>" style="background-color:lightblue" >
+                            <i class="fas fa-edit" type ="submit" name="button_delete"  style="background-color:lightblue">Click To Confirm Deletion</i>
+                        </a>
+                        <?php
+                            if(isset($_GET["button_delete"])){
+                                $sql = "DELETE  FROM `invoice` WHERE `invoice_id` = '$invoice_id'";
+                                if(!mysqli_query($conn, $sql)){
+                                    header("Location: fail.php");
+                                }else{
+                                    header("Location: IISalesPersonView.php");
+                                }
+                            }
+                        ?>
+                   </div> 
+                </div>
+            </div>   
+        </section>
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
     <!-- Control sidebar content goes here -->
@@ -184,3 +194,4 @@ $(document).ready(function () {
 </script>
 </body>
 </html>
+

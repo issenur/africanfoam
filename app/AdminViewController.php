@@ -1,6 +1,6 @@
 <?php
 include_once("SalesEndUserModel.php");
-include_once("SalesIIEndUserModel.php");
+include_once("IISalesEndUserModel.php");
 include_once("CustomerEndUserModel.php");
 
  if(isset($_GET['delete_customer'])){
@@ -12,7 +12,7 @@ include_once("CustomerEndUserModel.php");
     
    if(isset($_GET['delete_sales_ii'])){
          $user_name = $_GET['delete_sales_ii'];
-         $salesIIEndUserModel = SalesIIEndUserModel::getInstance();
+         $salesIIEndUserModel = IISalesEndUserModel::getInstance();
          $salesIIEndUserModel->deactivateEndUser($user_name);
          header("location:AdminView.php");
     }  
@@ -33,7 +33,7 @@ include_once("CustomerEndUserModel.php");
     
    if(isset($_GET['activate_sales_ii'])){
          $user_name = $_GET['activate_sales_ii'];
-         $salesIIEndUserModel = SalesIIEndUserModel::getInstance();
+         $salesIIEndUserModel = IISalesEndUserModel::getInstance();
          $salesIIEndUserModel->activateEndUser($user_name);
          header("location:AdminView.php");
     }  

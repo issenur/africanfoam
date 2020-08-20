@@ -1,11 +1,21 @@
 <?php
+    include_once("Invoice.php");
+    include_once("InvoiceModel.php");
+    include_once("CostModel.php");
+    include_once("PaymentModel.php");
     include_once("CustomerModel.php");
+    include_once("IISalesModel.php");
     include_once("Model.php");
     include_once("Account.php");
     include_once("AccountModel.php");
     session_start();
-    if(!isset($_SESSION['username']) || $_SESSION['role'] != "Customer"){
+    if(!isset($_SESSION['username']) || $_SESSION['role'] != "IISales"){
         header("location:index.php");
+    }
+    
+    if(isset($_GET['view_invoice'])){
+        $customer_id = $_GET['view_invoice'];
+        $_SESSION['customer_id'] = $_GET['view_invoice'];
     }
 ?>
 <!DOCTYPE html>
@@ -72,28 +82,33 @@
              $model = new Model();
              $user_id = $model->getCurrentUserId();
              
-             $customerModel = CustomerModel::getInstance();
-             $customer = $customerModel->retrieveUser($user_id);
+             $iisalesModel = IISalesModel::getInstance();
+             $iisales = $iisalesModel->retrieveUser($user_id);
              
-             $firstname = $customer->getFirst();
-             $lastname = $customer->getLast();
+             $iifirstname = $iisales->getFirst();
+             $iilastname = $iisales->getLast();
+                 
+
              
-             echo $firstname . " " . $lastname;
+
+             echo $iifirstname . " " . $iilastname;
             ?>
         </div>
       </div>
 
       <!-- Sidebar Menu -->
+      <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <li class="nav-item">
-            <a href="CustomerView.php" class="nav-link active">
+            <a href="IISalesPersonView.php" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
-              <p>Customer Dashboard</p>
+              <p>Sales Manager Dashboard</p>
             </a>
           </li>
         </ul>
       </nav>
+      <!-- /.sidebar-menu -->
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
@@ -117,27 +132,25 @@
                             <thead>
                                 <tr>
                                     <th>Invoice#</th>
-                                    <th>Details</th>
                                     <th>Invoice Total</th>
                                     <th>Total Paid</th>
                                     <th>Outstanding Bal.</th>
                                     <th>Sales Person</th>
+                                    <th>Delete Invoice</th>                                    
+                                    <th>Delete Mattresses</th>
+                                    <th>Detete Payments</th>
                                     <th>Purchase Date</th>
                                 </tr>
                             </thead>
                             <?php
-                                $accountModel = AccountModel::getInstance();
-                                $account = $accountModel->retrieveAccount($user_id);
-
-                                
-                                $costModel = CostModel::getInstance();
-                                $paymentModel = PaymentModel::getInstance();
-                                
-
+                              $invoiceModel = InvoiceModel::getInstance();
+                              $costModel = CostModel::getInstance();
+                              $paymentModel = PaymentModel::getInstance(); 
+                              $invoiceCollection = $invoiceModel->retrieveStoreInvoices();
                                 echo "<id='example2'>";
                                 echo "<tbody>";
-                                if (!($account == null)) {
-                                    $invoiceCollection = $account->getInvoiceCollection();
+                                if (!($invoiceCollection == null)) {
+                                    
                                     while(!$invoiceCollection->isEmpty()) {
                                         $invoice = $invoiceCollection->extract();
                                         $invoice_id = $invoice->getInvoiceId();
@@ -147,6 +160,8 @@
                                         $sales = $invoice->getSales();
                                         $salesFirst = $sales->getFirst();
                                         $salesLast = $sales->getLast();
+                                        $hasCostCollection = false;
+                                        $hasPaymentCollection = false;
                                         $costCollection = $invoice->getCostCollection();
                                         $totalCost = $costModel->getTotalCost($costCollection);
                                         $totalCostF = number_format(abs($totalCost), 2, '.', ',');
@@ -155,11 +170,9 @@
                                         $totalPaymentF = number_format($totalPayment, 2, '.', ',');
                                         $grandTotal = $totalPayment + $totalCost;
                                         $grandTotalF = number_format($grandTotal, 2, '.', ',');
+                                       
                                         echo "<tr>";
-                                        echo "<td>" .$invoice_id. "</td>";
-                                        echo"<td>";
-                                        echo "<a href ='InvoiceDetailView.php?view_invoice=".  $invoice_id  ."'><button class='btn btn-dark'>Details</button>"."<a/>";
-                                        echo "</td>";
+                                        echo "<td>" .$invoice_id. "</td>"; 
                                         echo "<td> Ksh " . $totalCostF . "</td>";
                                         echo "<td> Ksh " . $totalPaymentF . "</td>";
                                         if(($grandTotalF) < 0){
@@ -168,6 +181,40 @@
                                           echo "<td style='color:green'> Ksh " . $grandTotalF . "</td>";
                                         }
                                         echo "<td>" . $salesFirst . " " . $salesLast . "</td>";
+                                        if(!($costCollection->isEmpty())){
+                                          $hasCostCollection = true;
+                                        }
+                                        
+                                        if (!($paymentCollection->isEmpty())){
+                                          $hasPaymentCollection = true;
+                                        }
+                                        if($hasCostCollection || $hasPaymentCollection){
+                                          echo"<td>";
+                                          echo "<a href ='#".  $invoice_id  ."'><button class='btn btn-primary disabled'>Delete Invoice</button>"."<a/>";
+                                          echo "</td>";
+                                        }else{
+                                          echo"<td>";
+                                          echo "<a href ='IISalesInvoiceDeleteView.php?view_invoice".  $invoice_id  ."'><button class='btn btn-primary'>Delete Invoice</button>"."<a/>";
+                                          echo "</td>";
+                                        }
+                                        if(!$hasCostCollection){
+                                          echo"<td>";
+                                          echo "<a href ='#".  $invoice_id  ."'><button class='btn btn-primary disabled'>Delete Mattresses</button>"."<a/>";
+                                          echo "</td>";
+                                        }else{
+                                          echo"<td>";
+                                          echo "<a href ='IISalesCostDeleteView.php?view_invoice=".  $invoice_id ."'><button class='btn btn-primary'>Delete Mattresses</button>"."<a/>";
+                                          echo "</td>";
+                                        }
+                                        if(!$hasPaymentCollection){
+                                          echo"<td>";
+                                          echo "<a href ='#".  $invoice_id  ."'><button class='btn btn-primary disabled'>Delete Payments</button>"."<a/>";
+                                          echo "</td>";
+                                        }else{
+                                          echo"<td>";
+                                          echo "<a href ='IISalesPaymentDeleteView.php?view_invoice=".  $invoice_id  ."'><button class='btn btn-primary'>Delete Payments</button>"."<a/>";
+                                          echo "</td>";
+                                        }
                                         echo "<td>" . $date . "</td>";
                                         echo "</tr>";
                                     }
@@ -181,25 +228,7 @@
                             ?>
                     </div>
                 </div>
-                <div class="row mb-2">
-                    
-                            <?php
-                              if (!($account == null)) {
-                                $accountBalance = $account->getAccountBalance();
-                                $accountBalanceF = number_format($accountBalance, 2, '.', ',');
-                                if($accountBalance < 0) {
-                                  echo "<div class='col-sm-4-auto'> Account Balance: ksh</div>";
-                                  echo "<div class='col-sm-8'><p style='color:red'> " . $accountBalanceF ."</p></div>";
-                                }else{
-                                  echo "<div class='col-sm-4-auto'> Account Balance: ksh</div>";
-                                  echo "<div class='col-sm-8'><p style='color:green'> " . $accountBalanceF ."</p></div>";
-                                }
-                              }else{
-                                echo "<p>Account Balance: ksh 0 </br></p>";
-                              }
-                            ?>
-                  
-                </div>
+     
             </div>
             <!-- /.container-fluid -->
         </section>
@@ -249,7 +278,7 @@ $(document).ready(function () {
         var phone_number = $("#sales_form_phone_number").val();
         var message = $("#sales_form_message").val();
         var submit = $("#sales_form_submit").val();
-        $(".sales_form_message").load("salesusercontroller.php", {
+        $(".sales_form_message").load("IISalesusercontroller.php", {
             username: username,
             password: password,
             first: first,

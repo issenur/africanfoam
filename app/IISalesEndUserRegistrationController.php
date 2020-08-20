@@ -1,13 +1,13 @@
 <?php
 
-include_once("SalesIIEndUserModel.php");
-include_once("SalesII.php");
+include_once("IISalesEndUserModel.php");
+include_once("IISales.php");
 
 if (isset($_POST['submit'])) {
     
     $username= $_POST['username'];
     $password= $_POST['password'];
-    $user_type = "SalesII";
+    $user_type = "IISales";
     $first= $_POST['first'];
     $last= $_POST['last'];
     $phone_number= $_POST['phone_number'];
@@ -42,15 +42,15 @@ if (isset($_POST['submit'])) {
       $errorPhoneNumber = true;
     }
     else {
-        $salesIIEndUserModel = SalesIIEndUserModel::getInstance();
-        $salesIIModel =  SalesIIModel::getInstance();
+        $salesEndUserModel = IISalesEndUserModel::getInstance();
+        $salesModel = IISalesModel::getInstance();
         
-        $tempSalesIIObject = new SalesII(-1, $first, $last, $phone_number, 0);
-        $sales_ii_id = $salesIIModel->addUser($tempSalesIIObject);
-        $salesIIObject = $salesIIModel->retrieveUser($sales_ii_id);
+        $tempSalesObject = new IISales(-1, $first, $last, $phone_number, 0);
+        $sales_id = $salesModel->addUser($tempSalesObject);
+        $salesObject = $salesModel->retrieveUser($sales_id);
    
-        $salesIIEndUserObject = new SalesIIEndUser($username, $password, $salesIIObject, $user_type, 1);
-        $salesIIEndUserModel->addEndUser($salesIIEndUserObject);
+        $salesEndUserObject = new IISalesEndUser($username, $password, $salesObject, $user_type, 1);
+        $salesEndUserModel->addEndUser($salesEndUserObject);
         echo "<span class='text-success'>Sales person successfully added</span>";    
     }
 }

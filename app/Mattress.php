@@ -2,6 +2,7 @@
 
 class Mattress{
   // Properties
+  public $mattress_id;
   public $type;
   public $description;
   public $size;
@@ -9,15 +10,23 @@ class Mattress{
   public $acitve;
   
   // Constructor for a mattress object.
-  function __construct($type, $description, $size, $price, $active){
+  function __construct($mattress_id, $type, $description, $size, $price, $active){
+    $this->mattress_id = $mattress_id;
     $this->type = $type;
     $this->description   = $description;
     $this->size   = $size;
     $this->price   = $price;
     $this->active   = $active;
   }
-  
- 
+  // Setter for mattress_id 
+  function setMattressId($mattress_id) {
+    $this->type = $type;
+  }
+
+  // Getter for mattress_id
+  function getMattressId() {
+    return $this->mattress_id;
+  }
   // Setter for type 
   function setType($type) {
     $this->type = $type;

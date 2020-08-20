@@ -84,7 +84,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="SalesIIEndUserRegistrationView.php" class="nav-link">
+            <a href="IISalesEndUserRegistrationView.php" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Register Salesperson II</p>
             </a>
@@ -99,6 +99,12 @@
             <a href="MattressAddView.php" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Add Mattress</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="AdminMattressView.php" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Manage Mattresses</p>
             </a>
           </li>
         </ul>

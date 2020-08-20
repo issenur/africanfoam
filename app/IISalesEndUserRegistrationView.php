@@ -101,15 +101,15 @@
           </div>
           <div class="col-md-8">
             <!-- general form elements -->
-            <div class="card card-warning">
+            <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Salesperson II Registration Form</h3>
+                <h3 class="card-title">Salesman Registration Form</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
               <form id="sales_add_form"">
                 <div class="card-body">
-                  <div class="form-group action="SalesIIEndUserRegistrationController.php" id="sales_add_form" method="post"">
+                  <div class="form-group action="IISalesEndUserRegistrationController.php" id="sales_add_form" method="post"">
                     <label>Username</label>
                     <input type="text"  class="form-control" id="sales_form_username"  name="username" placeholder="Username">
                   </div>
@@ -133,7 +133,7 @@
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                 <button class="btn btn-warning" type="submit" name="submit" id="sales_form_submit">Submit</button>
+                 <button class="btn btn-primary" type="submit" name="submit" id="sales_form_submit">Submit</button>
                   <br>
                   <br>
                   <p class="sales_form_message" name="message" > </p>
@@ -196,7 +196,7 @@ $(document).ready(function () {
         var phone_number = $("#sales_form_phone_number").val();
         var message = $("#sales_form_message").val();
         var submit = $("#sales_form_submit").val();
-        $(".sales_form_message").load("SalesIIEndUserRegistrationController.php", {
+        $(".sales_form_message").load("IISalesEndUserRegistrationController.php", {
             username: username,
             password: password,
             first: first,

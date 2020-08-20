@@ -1,13 +1,18 @@
 <?php
-class MattressCollection extends SplHeap{
-
+class PaymentCollection extends SplHeap{
+  public $collection;
+  
+  // Constructor for a mattress object.
+  function __construct(){
+  }
 	public function compare($payment1, $payment2){
-    $date1 = $payment1->getDate();
-    $date2 = $payment2->getDate();
+   
+   $int1 = $payment1->getDate();
+   $int2 = $payment2->getDate();
     
-    if($date1 > $date2){
+    if($int1 > $int2){
       return  1;
-    }elseif($date1 < $date2){
+    }elseif($int1 < $int2){
       return -1;
     }else{
       return  0;

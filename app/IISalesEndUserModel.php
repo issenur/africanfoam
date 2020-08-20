@@ -1,15 +1,15 @@
 <?php
 
-include_once("SalesIIModel.php");
-include_once("SalesIIEndUser.php");
+include_once("IISalesModel.php");
+include_once("IISalesEndUser.php");
 include_once("EndUserModel.php");
 
 
-class SalesIIEndUserModel extends EndUserModel {
- 
+class IISalesEndUserModel extends EndUserModel {
+  
   //Field for singleton object
   public static $instance = null;
-  
+ 
   // Constructor for a sales object.
   function __construct(){
   
@@ -18,7 +18,7 @@ class SalesIIEndUserModel extends EndUserModel {
   //Applying singleton pattern to Sales End User Model   
   public static function getInstance(){
       if (self::$instance == null){
-        self::$instance = new SalesIIEndUserModel();
+        self::$instance = new IISalesEndUserModel();
       }
       return self::$instance;
   }
@@ -36,13 +36,13 @@ class SalesIIEndUserModel extends EndUserModel {
     $user_name = $endUser->getUsername();
     $password = $endUser->getPassword();
     $user= $endUser->getUser();
-    $sales_ii_id = $user->getUserId();
+    $sales_id = $user->getUserId();
     $user_type = $endUser->getUserType();
     
     
     $sql  = " INSERT INTO";
     $sql .= "   user(username, password, admin_id, customer_id, sales_ii_id, sales_id , user_type, active)";
-    $sql .= " VALUES('$user_name', SHA1('$password'), NULL, NULL,'$sales_ii_id', NULL, '$user_type' , 1)";
+    $sql .= " VALUES('$user_name', SHA1('$password'), NULL, NULL, '$sales_id', NULL, '$user_type' , 1)";
  
     $stmt=$conn->prepare($sql);
     $stmt->execute();
@@ -50,7 +50,7 @@ class SalesIIEndUserModel extends EndUserModel {
   }
   
   //Retrieve an end user object to database 
-  function retrieveEndUser($sales_ii_id) {
+  function retrieveEndUser($sales_id) {
     $connection = Connection::getInstance();
     $conn = $connection->getConn();
     
@@ -68,7 +68,7 @@ class SalesIIEndUserModel extends EndUserModel {
     $sql .= " WHERE sales_ii_id=?";
     
     $stmt=$conn->prepare($sql);
-    $stmt->bind_param("i", $sales_ii_id);
+    $stmt->bind_param("i", $sales_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
@@ -78,13 +78,13 @@ class SalesIIEndUserModel extends EndUserModel {
     }else{
       $username = $row['username'];
       $password = $row['password'];
-      $sales_ii_id = $row['sales_ii_id'];
-      $salesModel = new SalesModel();
-      $salesIIObject = $salesModel->retrieveUser($user_id);
+      $sales_id = $row['sales_ii_id'];
+      $salesModel = new IISalesModel();
+      $salesObject = $salesModel->retrieveUser($user_id);
       $user_type = $row['user_type'];
       $active = $row['active'];
       
-      $endUserObject = new SalesEndUser($username, $password, $salesIIObject, $user_type, $active);
+      $endUserObject = new IISalesEndUser($username, $password, $salesObject, $user_type, $active);
       return $endUserObject;
     }
   }

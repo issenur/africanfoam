@@ -107,7 +107,7 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form id="sales_add_form"">
+              <form id="sales_add_form">
                 <div class="card-body">
                   <div class="form-group action="CustomerEndUserRegistrationController.php" id="sales_add_form" method="post"">
                     <label>Username</label>
@@ -135,7 +135,6 @@
                   </div>
                 </div>
                 <!-- /.card-body -->
-
                 <div class="card-footer">
                  <button class="btn btn-success" type="submit" name="submit" id="sales_form_submit">Submit</button>
                   <br>

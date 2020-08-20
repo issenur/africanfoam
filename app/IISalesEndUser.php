@@ -1,6 +1,6 @@
 <?php
 include_once("EndUser.php");
-class SalesIIEndUser extends EndUser {
+class IISalesEndUser extends EndUser {
   
   // Properties
   public $username;

@@ -42,8 +42,8 @@
       header("location:AdminView.php");
     } else if($result->num_rows == 1 && $_SESSION['role'] == "Customer" && $_SESSION['active'] > 0){
       header("location:CustomerView.php");
-    } else if($result->num_rows == 1 && $_SESSION['role'] == "SalesII" && $_SESSION['active'] > 0){
-      header("location:SalesIIPersonView.php");
+    } else if($result->num_rows == 1 && $_SESSION['role'] == "IISales" && $_SESSION['active'] > 0){
+      header("location:IISalesPersonView.php");
     } else if($result->num_rows == 1 && $_SESSION['role'] == "Sales" && $_SESSION['active'] > 0){
       header("location:SalesPersonView.php");
     } else{
@@ -88,7 +88,7 @@
         <label for="UserType">I am a :</label>
         <input type = "radio" name= "userType" value="Administrator" class="custom-radio" required>&nbsp;Admin  |
         <input type = "radio" name= "userType" value="Customer" class="custom-radio" required>&nbsp;Customer |
-        <input type = "radio" name= "userType" value="SalesII" class="custom-radio" required>&nbsp;Sales II |
+        <input type = "radio" name= "userType" value="IISales" class="custom-radio" required>&nbsp;IISales |
         <input type = "radio" name= "userType" value="Sales" class="custom-radio" required>&nbsp;Sales
       </div>
       <div class="row d-flex justify-content-center">

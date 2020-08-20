@@ -1,13 +1,34 @@
 <?php
-  include_once("dbconnection.php");
-?>
+    include_once("SalesModel.php");
+    include_once("Model.php");
+    include_once("Connection.php"); 
+    session_start();
+    
+    if(!isset($_SESSION['username']) || $_SESSION['role'] != "Sales"){
+        header("location:index.php");
+    }
+    
+    $connection = Connection::getInstance();
+    $conn = $connection->getConn();  
+     
 
+    function fill_unit_select_box($conn){
+      $output = "";
+      $sql = "SELECT * FROM mattress ORDER by Price DESC";
+      $result = $conn->query($sql);
+      while($row = $result->fetch_assoc()) {
+        $price = number_format($row['price'], 2, '.', ',');
+        $output .= '<option value= "'. $row['mattress_id']. '">' . $row['description'] . " Ksh" . $price .'</option>';
+      }
+      return $output;
+    }
+?>
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Testing Add Sales</title>
+  <title>African Foam Sales</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -30,13 +51,15 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="../../index3.html" class="nav-link">Home</a>
+        <a href="#">Home</a>
       </li>
     </ul>
 
-
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="logout.php" class="nav-link">Log out</a>
+      </li>
     </ul>
   </nav>
   <!-- /.navbar -->
@@ -44,9 +67,11 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="../../index3.html" class="brand-link">
-     
-      <span class="brand-text font-weight-light"></span>
+    <a href="https://www.africanfoam.com" class="brand-link">
+      <img src="../../dist/img/africanfoamlogo.jpg"
+           class="brand-image img-circle elevation-3"
+           style="opacity: .8">
+      <span class="brand-text font-weight-light">African Foam</span>
     </a>
 
     <!-- Sidebar -->
@@ -54,16 +79,35 @@
       <!-- Sidebar user (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-       
+          <img src="../../dist/img/defaultpic.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="#" class="d-block">
+            <?php
+             $model = Model::getInstance();
+             $user_id = $model->getCurrentUserId();
+             
+             $salesModel = SalesModel::getInstance();
+             $sales = $salesModel->retrieveUser($user_id);
+             
+             $firstname = $sales->getFirst();
+             $lastname = $sales->getLast();
+             
+             echo $firstname . " " . $lastname;
+            ?>
+          </a>
         </div>
       </div>
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item">
+            <a href="SalesPersonView.php" class="nav-link active">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Salesman Dashboard</p>
+            </a>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -76,17 +120,6 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>Add Sales</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Add Sales Test</li>
-            </ol>
-          </div>
-        </div>
       </div><!-- /.container-fluid -->
     </section>
 
@@ -95,56 +128,139 @@
       <div class="container-fluid">
         <div class="row">
           <!-- left column -->
-          <div class="col-md-12">
+          <div class="col-sm-2">
+          </div>
+          <div class="col-sm-8">
             <!-- general form elements -->
-              <!-- form start -->
-              <form action="test_controller.php" id="sales_add_form" method="post">
-                <div class="card-body">
-                  <div class="form-group col-md-12">
-                    <input type="text"  class="form-control" id="sales_form_username"  name="username" placeholder="ENTER USERNAME">
+            <div class="card card-info">
+              <div class="card-header">
+                <h3 class="card-title">Create Invoice Form</h3>
+              </div>
+              <!-- /.card-header -->
+              <form method="POST" id="invoice_add_form">
+                <div class= "card-body">       
+                  <div class= "row">
+                    <div class="col">
+                      <div class="table-fixed">
+                        <span id="error"></span>
+                        <table class="table table-borderless" id="invoice_table">
+                        <tbody>
+                           <tr>
+                            <th style="width: 50%">
+                              <label>Invoice Customer</label>
+                            </th>
+                           </tr>
+                           <tr>
+                           <td style="width: 50%">
+                              <select id=customer_id name="customer_id" class="form-control customer_id">
+                              <option value="">--Select Shop Name--</option>
+                              <?php
+                                $connection = Connection::getInstance();
+                                $conn = $connection->getConn();
+                                $sql = "SELECT * FROM customer ORDER by first ASC";
+                                $result = $conn->query($sql);
+                                
+                                if ($result->num_rows > 0) {       
+                                  
+                                  while($row = $result->fetch_assoc()) {
+                                    echo "<option value=" . $row['customer_id'] . ">" . $row['shop_name'] . "</option>";
+                                  }   
+                                }
+                              ?>
+                              </select>
+                           </td>
+                           </tr>
+                          <tr>
+                            <th style="width: 70%">Mattress Name</th>
+                            <th style="width: 10%">Qty</th>
+                            <th style="width: 15%">Discount%</th>
+                            <th style="width: 25%" ><button type="button" style="width: 30px" id="mattress_line_add" name="add" class="btn btn-success btn-sm add"><span class="glyphicon glyphicon-plus"> + </span></button></th>
+                          </tr>
+                          <tr>
+                            <td style="width: 70%">
+                              <select id=mattress_form_id0 name="mattress_id[]" class="form-control mattress_id">
+                              <option value="">--Select Mattress--</option>
+                              <?php
+                                $connection = Connection::getInstance();
+                                $conn = $connection->getConn();
+                                $sql = "SELECT * FROM mattress ORDER by Price DESC";
+                                $result = $conn->query($sql);
+                                
+                                if ($result->num_rows > 0) {       
+                                  
+                                  while($row = $result->fetch_assoc()) {
+                                    $price = number_format($row['price'], 2, '.', ',');
+                                    echo "<option value=" . $row['mattress_id'] . ">" . $row['description'] . " Ksh" . $price . "</option>";
+                                  }   
+                                }
+                              ?>
+                            </td>
+                            <td style="width: 10%"><input id="mattress_form_quantity0" class="form-control quantity" type="text" name="quantity[]" placeholder="Qty"></td>
+                            <td style="width: 15%"><input id="mattress_form_discount0" class="form-control discount" type="text" name="discount[]" placeholder="Percent%"></td>
+                            <td style="width: 25%"><button class="btn btn-danger btn-sm remove" style="width: 30px" type="button" name="mattress_line_remove"><span class="glyphicon glyphicon-minus"> - </span></button></td>
+                          </tr>
+                        </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
-                  <div class="form-group col-md-12">
-                    <input type="password"  class="form-control" id="sales_form_password" name="password" placeholder="ENTER PASSWORD">
-                  </div>
-                  <div class="form-group col-md-12 " data-select2-id="29" id="sales_form_user_type" >  
-                     <?php
-                            $connection = Connection::getInstance();
-                            $conn = $connection->getConn();
-                            $sql = "SELECT * FROM customer ORDER by first ASC";
-                            $result = $conn->query($sql);
-                            
-                            if ($result->num_rows > 0) {
-                              echo "<select  id='customer_form'>";
-                              echo "<option value='choose'> ". "---Select Customer---" . "</option>";
-                              while($row = $result->fetch_assoc()) {
-                                echo "<option value=" . $row['customer_id'] . ">" . $row['shop_name'] . "</option>";
-                              }
-                            echo "</select>";
-                            } 
-                            $conn->close();
-                          ?>
-                  </div>
-                   <div class="form-group col-md-12">
-                    <input type="text"  class="form-control" id="sales_form_first"  name="first" placeholder="ENTER FIRST NAME">
-                  </div>
-                  <div class="form-group col-md-12">
-                    <input type="text"  class="form-control" id="sales_form_last" name="last" placeholder="ENTER LAST NAME">
-                  </div>
-                  <div class="form-group col-md-12">
-                    <input type="text" class="form-control" id="sales_form_phone_number" name="phone_number" placeholder="ENTER PHONE NUMBER">
+                  <div class="row">
+                    <div class="col">
+                      <div class="row">
+                        <div class="col-sm-4">
+                        </div>
+                        <div class= "col-sm-8">
+                          <div class= "row">
+                            <div class= "col-sm-8">  
+                               <label> Payment Towards Invoice </label>
+                            </div>
+                            <div class= "col-sm-4">
+                                <label>  Date   </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class= "row">
+                        <div class="col-sm-4">
+                        </div>
+                        <div class= "col-sm-8">
+                          <div class= "row">
+                            <div class= "col-sm-8">  
+                              <div class="form-group">
+                                <input type="text"  class="form-control amount" id="mattress_form_amount"  name="amount" placeholder="Ksh 0000.00">
+                              </div>
+                            </div>
+                            <div class= "col-sm-4">
+                              <div class="form-group">
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                      <i class="far fa-calendar-alt"></i>
+                                    </span>
+                                  </div>
+                                    <input type="text" class="form-control float-right date" id="mattress_form_date" name="date" placeholder="yyyy-mm-dd">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <!-- /.card-body -->
-                <div class="card-footer col-md-12">
-                  <button class="btn btn-primary" type="submit" name="submit" id="sales_form_submit">Submit</button>
+                <div class="card-footer ">
+                  <button class="btn btn-info submit" type="submit" id="mattress_form_submit" name="submit">Submit Invoice</button>
                   <br>
                   <br>
-                  <p class="sales_form_message" name="message" > </p>
+                  <p class="mattress_form_message" id="message" name="message" ></p>
                 </div>
               </form>
             </div>
+            <!-- /.card -->
           </div>
-          <!--/.col (left) -->
+          <div class="col-sm-2">
+          </div>
+          <!--/.col (right) -->
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -154,9 +270,10 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
-      <b></b> 
+      <b>Africanfoam App Version</b> 5.0
     </div>
-    <strong>
+     All rights
+    reserved.
   </footer>
 
   <!-- Control Sidebar -->
@@ -166,8 +283,7 @@
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
-<!-- Ajax -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 <!-- jQuery -->
 <script src="../../plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
@@ -184,31 +300,154 @@ $(document).ready(function () {
 });
 </script>
 <script>
-  $(document).ready(function() {
-      $("form").submit(function(event){
-        event.preventDefault();
-        
-        var username = $("#sales_form_username").val();
-        var password = $("#sales_form_password").val();
-        var user_type = $(this).find(":selected").text();
-        var first = $("#sales_form_first").val();
-        var last = $("#sales_form_last").val();
-        var phone_number = $("#sales_form_phone_number").val();
-        var message = $("#sales_form_message").val();
-        var submit = $("#sales_form_submit").val();
-        $(".sales_form_message").load("test_controller.php", {
-            username: username,
-            password: password,
-            user_type: user_type,
-            first: first,
-            last: last,
-            phone_number: phone_number,
-            message: message,
-            submit: submit
-          });
+$(document).ready(function(){
+   $(document).on('click', '.add', function(){
+  var counter = 1;
+  var html = '';
+      html += '<tr>';
+      html += '<td>';
+      html += '<select id="mattress_form_id' + counter + '" name="mattress_id[]"  class="form-control select2bs4 select2-hidden-accessible mattress_id" style="width: 100%;" data-select2-id="17" tabindex="-1" aria-hidden="true"  >';
+      html += '<option value="">--Select Mattress--</option>';
+      html += '<?php echo fill_unit_select_box($conn); ?>';
+      html += '</td>';
+      html += '<td><input type="text"  class="form-control quantity" id="mattress_form_quantity' + counter + ' "  name="quantity[]" placeholder="Qty"></td>';
+      html += '<td><input type="text"  class="form-control discount" id="mattress_form_discount' + counter + ' "  name="discount[]" placeholder="Percent%"></td>';
+      html += '<td><button style="width: 30px" class="btn btn-danger btn-sm remove" type="button" name="remove"><span class="glyphicon glyphicon-minus">-</span></button> </td>';
+      html += '</tr>'
+      $('#invoice_table').append(html);
+      counter++;
+  });
+  
+  $(document).on('click', '.remove', function(){
+    $(this).closest('tr').remove();
+  });
+  
+$('#invoice_add_form').on('click','.submit', function(event){
+    event.preventDefault();
+    var error = '';
+    
+ 
+    var form_data = $("#invoice_add_form").serialize();
+    if(error == ''){
+      $.ajax({
+        url: "CostLineController.php",
+        method: "POST",
+        data: form_data,
+        success:function(data){
+          if(data == 'ok'){
+            $('#invoice_table').find("tr:gt(0)").remove();
+            $('#message').html("<span class='text-success'>Mattress Added Successfully "+ error + "</span>");
+          }else{
+            $('#message').html("<span class='text-danger'>Mattress Not Added "+ error + "</span>");
+          }
+        }
       });
-    });
-</script>
+    }else{
+      $('#message').html("<span class='text-danger'> "+ error +" </span>");
+    }
+  });
+});
 </script>
 </body>
 </html>
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+<?php
+include_once("SalesModel.php");
+include_once("Model.php");
+include_once("Connection.php"); 
+session_start();
+  if(!isset($_SESSION['username']) || $_SESSION['role'] != "Sales"){
+    header("location:index.php");
+    
+  }
+    
+  if(isset($_POST['quantity'])){
+    $connections = Connection::getInstance();
+    $conn = $connections->getConn();
+   
+    $customer_id = $_POST['customer_id'];
+    $time = "00:00:00";
+    $date = $_POST['date'];
+    $date_time = $date;
+    
+    $model = Model::getInstance();
+    $user_id = $model->getCurrentUserId();
+  
+    $sql = "INSERT INTO `invoice` (`customer_id` , `sales_id`, `is_loan`, `date`) values('$customer_id' , '$user_id', '1', '$date_time')";
+    $stmt=$conn->prepare($sql);
+    $stmt->execute();
+    
+    $sql = "SELECT MAX(`invoice_id`) from  `invoice` WHERE `customer_id` = '$customer_id' AND `sales_id` = '$user_id' ";
+    $result = $conn->query($sql);
+    $row = $result -> fetch_array();
+    $invoice_id = (int)$row['MAX(`invoice_id`)'];
+   
+    $connect = new PDO("mysql:host=localhost;dbname=afoam", "root", "");
+    for($count = 0; $count < count($_POST['mattress_id']); $count++){
+        $sql  = " INSERT INTO";
+        $sql .= " `cost_line` (`invoice_id` , `mattress_id`, `quantity`, `discount`)";
+        $sql .= " VALUES ('$invoice_id' , :mattress_id, :quantity, :discount )";
+        
+        $stmt = $connect->prepare($sql);
+        $stmt->execute(array(
+        ':mattress_id' => $_POST['mattress_id'][$count],
+        ':quantity'  => $_POST['quantity'][$count], 
+        ':discount' => $_POST['discount'][$count] 
+        )
+      );
+    }
+    $amount = $_POST['amount'];
+    
+    $sql = "INSERT INTO `payment_line` (`invoice_id` , `amount`, `date`, `sales_id`) values('$invoice_id' , '$amount',  '$date_time', '$user_id')";
+    $stmt=$conn->prepare($sql);
+    $result = $stmt->execute();
+    
+    
+    if(!($result == true)){
+        echo 'not ok';
+      } else{
+        echo 'ok';
+      }
+  } 
+?>
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+<?php
+class Model {
+  
+  //Field for singleton object
+  public static $instance = null;
+  private $currentuserid = 0;
+  
+  // Constructor for a customer object.
+  function __construct(){
+        if($_SESSION['role'] == "Administrator"){
+           $this->currentuserid = $_SESSION['admin_id'];
+        } else if($_SESSION['role'] == "Customer"){
+            $this->currentuserid = $_SESSION['customer_id'];
+        } else if($_SESSION['role'] == "SalesII"){
+            $this->currentuserid = $_SESSION['sales_ii_id'];
+        } else if($_SESSION['role'] == "Sales"){
+            $this->currentuserid = $_SESSION['sales_id'];
+        } else{}
+  }
+  
+  //Applying singleton pattern to Customer Model   
+  public static function getInstance(){
+      if (self::$instance == null){
+        self::$instance = new Model();
+      }
+      return self::$instance;
+  }
+  
+  //Setter for current user id
+  public function setCurrentUserId($user_id) {
+    $this->currentuserid = $user_id;   
+  }
+  
+  //Getter for current user id
+  public function getCurrentUserId() {
+    return($this->currentuserid);
+  }
+}
+?>
+-------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -12,16 +12,7 @@
     $conn = $connection->getConn();  
      
 
-    function fill_unit_select_box($conn){
-      $output = "";
-      $sql = "SELECT * FROM mattress where active = 1 ORDER by Price DESC";
-      $result = $conn->query($sql);
-      while($row = $result->fetch_assoc()) {
-        $price = number_format($row['price'], 2, '.', ',');
-        $output .= '<option value= "'. $row['mattress_id']. '">' . $row['description'] . " Ksh" . $price .'</option>';
-      }
-      return $output;
-    }
+    
 ?>
 <!DOCTYPE html>
 <html>
@@ -132,9 +123,9 @@
           </div>
           <div class="col-sm-8">
             <!-- general form elements -->
-            <div class="card card-info">
+            <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Create Invoice Form</h3>
+                <h3 class="card-title">Add Payment Form</h3>
               </div>
               <!-- /.card-header -->
               <form method="POST" id="invoice_add_form">
@@ -145,111 +136,48 @@
                         <span id="error"></span>
                         <table class="table table-borderless" id="invoice_table">
                         <tbody>
-                           <tr>
-                            <th style="width: 50%">
-                              <label>Invoice Customer</label>
-                            </th>
-                           </tr>
-                           <tr>
-                           <td style="width: 50%">
-                              <select id=customer_id name="customer_id" class="form-control customer_id">
-                              <option value="">--Select Shop Name--</option>
-                              <?php
-                                $connection = Connection::getInstance();
-                                $conn = $connection->getConn();
-                                $sql = "SELECT * FROM customer ORDER by first ASC";
-                                $result = $conn->query($sql);
-                                
-                                if ($result->num_rows > 0) {       
-                                  
-                                  while($row = $result->fetch_assoc()) {
-                                    echo "<option value=" . $row['customer_id'] . ">" . $row['shop_name'] . "</option>";
-                                  }   
-                                }
-                              ?>
-                              </select>
-                           </td>
-                           </tr>
                           <tr>
-                            <th style="width: 70%">Mattress Name</th>
-                            <th style="width: 10%">Qty</th>
-                            <th style="width: 15%">Discount%</th>
-                            <th style="width: 25%" ><button type="button" style="width: 30px" id="mattress_line_add" name="add" class="btn btn-success btn-sm add"><span class="glyphicon glyphicon-plus"> + </span></button></th>
+                            <th style="width: 50%">Invoice</th>
+                            <th style="width: 20%">Payment</th>
+                            <th style="width: 25%">Date</th>
                           </tr>
                           <tr>
-                            <td style="width: 70%">
-                              <select id=mattress_form_id0 name="mattress_id[]" class="form-control mattress_id">
-                              <option value="">--Select Mattress--</option>
+                            <td style="width: 50%">
+                              <select id="invoice_id" name="invoice_id" class="form-control invoice_id">
+                              <option value="">-------Select Invoice------</option>
                               <?php
                                 $connection = Connection::getInstance();
                                 $conn = $connection->getConn();
-                                $sql = "SELECT * FROM mattress WHERE active = 1 ORDER by Price DESC";
+                                $sql = "SELECT * FROM invoice ORDER by invoice_id DESC";
                                 $result = $conn->query($sql);
                                 
                                 if ($result->num_rows > 0) {       
                                   
                                   while($row = $result->fetch_assoc()) {
-                                    $price = number_format($row['price'], 2, '.', ',');
-                                    echo "<option value=" . $row['mattress_id'] . ">" . $row['description'] . " Ksh" . $price . "</option>";
+                                    $date1 = new DateTime($row['date']);
+                                    $date = $date1->format('d-M-Y');
+                                    echo "<option value=" . $row['invoice_id'] . "> Invoice#:" . $row['invoice_id'] . " Date:" . $date . "</option>";
                                   }   
                                 }
                               ?>
                             </td>
-                            <td style="width: 10%"><input id="mattress_form_quantity0" class="form-control quantity" type="text" name="quantity[]" placeholder="Qty"></td>
-                            <td style="width: 15%"><input id="mattress_form_discount0" class="form-control discount" type="text" name="discount[]" placeholder="Percent%"></td>
-                            <td style="width: 25%"><button class="btn btn-danger btn-sm remove" style="width: 30px" type="button" name="mattress_line_remove"><span class="glyphicon glyphicon-minus"> - </span></button></td>
+                            <td style="width: 20%"><input type="text"  class="form-control amount" id="mattress_form_amount"  name="amount" placeholder="Ksh 0000.00"></td>
+                            <td style="width: 25%">
+                                  
+                                      
+                                   
+                                <input type="text" class="form-control date" id="mattress_form_date" name="date" placeholder="01-JAN-2000"> </input>
+                                    
+                            </td>
                           </tr>
                         </tbody>
                         </table>
                       </div>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col">
-                      <div class="row">
-                        <div class="col-sm-4">
-                        </div>
-                        <div class= "col-sm-8">
-                          <div class= "row">
-                            <div class= "col-sm-8">  
-                               <label> Payment Towards Invoice </label>
-                            </div>
-                            <div class= "col-sm-4">
-                                <label>  Date   </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class= "row">
-                        <div class="col-sm-4">
-                        </div>
-                        <div class= "col-sm-8">
-                          <div class= "row">
-                            <div class= "col-sm-8">  
-                              <div class="form-group">
-                                <input type="text"  class="form-control amount" id="mattress_form_amount"  name="amount" placeholder="Ksh 0000.00">
-                              </div>
-                            </div>
-                            <div class= "col-sm-4">
-                              <div class="form-group">
-                                <div class="input-group">
-                                  <div class="input-group-prepend">
-                                    <span class="input-group-text">
-                                      <i class="far fa-calendar-alt"></i>
-                                    </span>
-                                  </div>
-                                    <input type="text" class="form-control float-right date" id="mattress_form_date" name="date" placeholder="01-JAN-2000">
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
                 <div class="card-footer ">
-                  <button class="btn btn-info submit" type="submit" id="mattress_form_submit" name="submit">Submit Invoice</button>
+                  <button class="btn btn-primary submit" type="submit" id="mattress_form_submit" name="submit">Submit Invoice</button>
                   <br>
                   <br>
                   <p class="mattress_form_message" id="message" name="message" ></p>
@@ -301,33 +229,15 @@ $(document).ready(function () {
 </script>
 <script>
 $(document).ready(function(){
-   $(document).on('click', '.add', function(){
-  var counter = 1;
-  var html = '';
-      html += '<tr>';
-      html += '<td>';
-      html += '<select id="mattress_form_id' + counter + '" name="mattress_id[]"  class="form-control select2bs4 select2-hidden-accessible mattress_id" style="width: 100%;" data-select2-id="17" tabindex="-1" aria-hidden="true"  >';
-      html += '<option value="">--Select Mattress--</option>';
-      html += '<?php echo fill_unit_select_box($conn); ?>';
-      html += '</td>';
-      html += '<td><input type="text"  class="form-control quantity" id="mattress_form_quantity' + counter + ' "  name="quantity[]" placeholder="Qty"></td>';
-      html += '<td><input type="text"  class="form-control discount" id="mattress_form_discount' + counter + ' "  name="discount[]" placeholder="Percent%"></td>';
-      html += '<td><button style="width: 30px" class="btn btn-danger btn-sm remove" type="button" name="remove"><span class="glyphicon glyphicon-minus">-</span></button> </td>';
-      html += '</tr>'
-      $('#invoice_table').append(html);
-      counter++;
-  });
-  
-  $(document).on('click', '.remove', function(){
-    $(this).closest('tr').remove();
-  });
+
+ 
   
 $('#invoice_add_form').on('click','.submit', function(event){
     event.preventDefault();
     var error = '';
    
     var form_data = $("#invoice_add_form").serialize();
-    var customerInput = $('#customer_id').val();
+    var invoiceInput = $('#invoice_id').val();
     var dateInput = $('#mattress_form_date').val();
     var dateT = $('#mattress_form_date').val();
     var dateL = dateT.length;
@@ -349,8 +259,8 @@ $('#invoice_add_form').on('click','.submit', function(event){
     }
     var amountInput = $('#mattress_form_amount').val();
     if((error == '')){
-     if((customerInput == '')|| (amountInput == '') || (dateInput == '')){
-        $("#customer_id").addClass("form-control is-invalid");
+     if((invoiceInput == '')|| (amountInput == '') || (dateInput == '')){
+      
         $("#mattress_form_amount").addClass("form-control is-invalid");
         $("#mattress_form_date").addClass("form-control is-invalid");
         $('#message').html("<span class='text-danger'>Please Fill in all Fields</span>");
@@ -368,16 +278,16 @@ $('#invoice_add_form').on('click','.submit', function(event){
         $('#message').html("<span class='text-danger'>Year out of range</span>");
       }else{
       $.ajax({
-        url: "InvoiceAddController.php",
+        url: "PaymentAddController.php",
         method: "POST",
         data: form_data,
         success:function(data){
-            $("#customer_id, #mattress_form_amount, #mattress_form_date").removeClass("is-invalid");
+            $("#invoice_id, #mattress_form_amount, #mattress_form_date").removeClass("is-invalid");
             if(data == 'ok'){
-              $("#mattress_form_amount, #mattress_form_date, #customer_id, .mattress_id, .quantity, .discount").val("");
-              $('#message').html("<span class='text-success'>Invoice Successfully Created</span>"); 
+              $("#mattress_form_amount, #mattress_form_date, #invoice_id").val("");
+              $('#message').html("<span class='text-success'>Payment Successfully Created</span>"); 
             }else {
-              $('#message').html("<span class='text-danger'>Invoice Add Unsuccessfull</span>");
+              $('#message').html("<span class='text-danger'>Payment Add Unsuccessfull</span>");
             }
         }
       });

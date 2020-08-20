@@ -1,8 +1,9 @@
 <?php
 include_once("Connection.php");
 include_once("UserModel.php");
-include("Customer.php");
-include("CustomerEndUser.php");
+include_once("Customer.php");
+include_once("CustomerEndUser.php");
+include_once("InvoiceModel.php");
 
 class CustomerModel extends UserModel {
   
@@ -85,10 +86,23 @@ class CustomerModel extends UserModel {
       $shop_name = $row['shop_name'];
       $phone_number = $row['phone_number'];
       $active = $row['active'];
-      
       $userObject = new Customer($user_id, $shop_name, $first, $last, $phone_number, $active);
       return $userObject;
     }
   }
+  
+  function getAccountBalance($user_id) {
+    $customerModel = CustomerModel::getInstance();
+    $inv = $customerModel->retrieveInvoices($user_id);
+    $invoiceCollection = clone $inv;
+    $num = 0;
+    while(!$invoiceCollection->isEmpty()) {
+     $invoice = $invoiceCollection->extract();
+     $invoiceBalance = $invoice->getInvoiceBalance();
+     $num = $num + $invoiceBalance;
+    }
+    return $num;
+  }
 }
+
 ?>

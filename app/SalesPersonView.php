@@ -1,6 +1,10 @@
 <?php
     include_once("SalesModel.php");
+    include_once("CustomerModel.php");
     include_once("Model.php");
+    include_once("Account.php");
+    include_once("AccountModel.php");
+
     session_start();
     if(!isset($_SESSION['username']) || $_SESSION['role'] != "Sales"){
         header("location:index.php");
@@ -15,7 +19,6 @@
   <title>African Foam Sales</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <!-- Font Awesome -->
   <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
   <!-- Ionicons -->
@@ -69,7 +72,7 @@
          
           <a href="#" class="d-block">
             <?php
-             $model = Model::getInstance();
+             $model= new Model();
              $user_id = $model->getCurrentUserId();
              
              $salesModel = SalesModel::getInstance();
@@ -99,6 +102,12 @@
               <p>Create Invoice</p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="PaymentAddView.php" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Apply Payment</p>
+            </a>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -114,24 +123,320 @@
       </div><!-- /.container-fluid -->
     </section>
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <!-- left column -->
-          <div class="col-md-2">
-          </div>
-          <div class="col-md-8">
-          </div>
-          <!--/.col (left) -->
-          <!-- right column -->
-          <div class="col-md-2">
-          </div>
-          <!--/.col (right) -->
-        </div>
-        <!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </section>
+  <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                       <h1>Customer Accounts</h1>
+                       <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Shop Name</th>
+                                    <th>Action</th>
+                                    <th>Customer</th>
+                                    <th>Phone Number</th>
+                                    <th>Account Balance</th>
+                                </tr>
+                            </thead>
+                            <?php
+                                $accountModel = AccountModel::getInstance();
+                                $accountCollection = $accountModel->retrieveAccountCollection();
+                                $customerModel= CustomerModel::getInstance();
+                                echo "<id='example2'>";
+                                echo "<tbody>";
+                                if (!($accountCollection == null)) {
+                                    while(!$accountCollection->isEmpty()) {
+                                        $account = $accountCollection->extract();
+                                        $customer_id = $account->getCustomerId();
+                                        $customer = $customerModel->retrieveUser($customer_id);
+                                        $shopName = $customer->getShopName();
+                                        $phoneNumber = $customer->getPhoneNumber();
+                                        $first = $customer->getFirst();
+                                        $last = $customer->getLast();
+                                        
+                                        
+                                        $phoneNumberF = sprintf("%s-%s-%s-%s",
+                                        substr($phoneNumber, 0, 3),
+                                        substr($phoneNumber, 3, 3),
+                                        substr($phoneNumber, 6, 2),
+                                        substr($phoneNumber, 8, 4)
+                                        );
+
+                                        $accountBalance = $account->getAccountBalance();
+                                        $accountBalanceF = number_format($accountBalance, 2, '.', ',');
+                                        echo "<tr>";
+                                        echo "<td>" . $shopName. "</td>";
+                                        echo"<td>";
+                                        echo "<a href ='SalesCustomerDetailView.php?view_invoice=".  $customer_id  ."'><button class='btn btn-dark'>Account Details</button>"."<a/>";
+                                        echo "</td>";
+                                        echo "<td>" . $first . " " . $last . "</td>";
+                                        echo "<td> +" . $phoneNumberF . "</td>";
+                                        if(($accountBalance) < 0){
+                                          echo "<td style='color:red'  > Ksh " . $accountBalanceF . "</td>";
+                                        }else if(($accountBalance) == 0){
+                                          echo "<td> Ksh " . $accountBalanceF . "</td>";
+                                        }else{
+                                          echo "<td style='color:green'> Ksh + " . $accountBalanceF . "</td>";
+                                        }
+                                        echo "</tr>";
+                                    }
+                                    echo "</tbody>";
+                                    echo "</table>";
+                                } else {
+                                    echo "</tbody>";
+                                    echo "</table>";
+                                    echo "<h4>CUSTOMER DATABASE IS EMPTY</h4>";
+                                }
+                            ?>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                       <h1>+90 days past-due</h1>
+                       <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Shop Name</th>
+                                    <th>Customer</th>                          
+                                    <th>Action</th>
+                                    <th>Amount</th>
+                                    
+                                </tr>
+                            </thead>
+                            <?php
+                                $accountModel = AccountModel::getInstance();
+                                $accountCollection = $accountModel->retrieveAccountCollection();
+                                $customerModel= CustomerModel::getInstance();
+                                echo "<id='example2'>";
+                                echo "<tbody>";
+                                if (!($accountCollection == null)) {
+                                    while(!$accountCollection->isEmpty()) {
+                                        $account = $accountCollection->extract();
+                                        $customer_id = $account->getCustomerId();
+                                        $customer = $customerModel->retrieveUser($customer_id);
+                                        $shopName = $customer->getShopName();
+                                        $phoneNumber = $customer->getPhoneNumber();
+                                        $first = $customer->getFirst();
+                                        $last = $customer->getLast();
+                                        
+                                        
+                                        $phoneNumberF = sprintf("%s-%s-%s-%s",
+                                        substr($phoneNumber, 0, 3),
+                                        substr($phoneNumber, 3, 3),
+                                        substr($phoneNumber, 6, 2),
+                                        substr($phoneNumber, 8, 4)
+                                        );
+                                        $balance90 = $account->getAccountBalance4();
+                                        $balance90F = number_format($balance90, 2, '.', ',');
+                                        echo "<tr>";
+                                        echo "<td>" . $shopName. "</td>";
+                                        echo "<td>" . $first . " " . $last . "</td>";
+                                        echo"<td>";
+                                        echo "<a href ='SalesCustomerDetailView.php?view_invoice=".  $customer_id  ."'><button class='btn btn-info'>Account Details</button>"."<a/>";
+                                        echo "</td>";
+                                        if($balance90F > 0){
+                                          echo "<td style='color:red' > Ksh " . $balance90F . "</td>";
+                                        }
+                                        echo "<td> Ksh " . $balance90F . "</td>";
+                                        echo "</tr>";
+                                    }
+                                    echo "</tbody>";
+                                    echo "</table>";
+                                } else {
+                                    echo "</tbody>";
+                                    echo "</table>";
+                                    echo "<h4>CUSTOMER DATABASE IS EMPTY</h4>";
+                                }
+                            ?>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                       <h1> 60 - 89 days past-due</h1>
+                       <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                   <th>Shop Name</th>
+                                   <th>Customer</th>                                 
+                                   <th>Action</th>
+                                   <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <?php
+                                $accountModel = AccountModel::getInstance();
+                                $accountCollection = $accountModel->retrieveAccountCollection();
+                                $customerModel= CustomerModel::getInstance();
+                                echo "<id='example2'>";
+                                echo "<tbody>";
+                                if (!($accountCollection == null)) {
+                                    while(!$accountCollection->isEmpty()) {
+                                        $account = $accountCollection->extract();
+                                        $customer_id = $account->getCustomerId();
+                                        $customer = $customerModel->retrieveUser($customer_id);
+                                        $shopName = $customer->getShopName();
+                                        $phoneNumber = $customer->getPhoneNumber();
+                                        $first = $customer->getFirst();
+                                        $last = $customer->getLast();
+                                        
+                                        
+                                        $phoneNumberF = sprintf("%s-%s-%s-%s",
+                                        substr($phoneNumber, 0, 3),
+                                        substr($phoneNumber, 3, 3),
+                                        substr($phoneNumber, 6, 2),
+                                        substr($phoneNumber, 8, 4)
+                                        );
+                                        $balance60 = $account->getAccountBalance3();
+                                        $balance60F = number_format($balance60, 2, '.', ',');
+                                        
+             
+                                        echo "<tr>";
+                                        echo "<td>" . $shopName. "</td>";
+                                        echo "<td>" . $first . " " . $last . "</td>";
+                                        echo"<td>";
+                                        echo "<a href ='SalesCustomerDetailView.php?view_invoice=".  $customer_id  ."'><button class='btn btn-info'>Account Details</button>"."<a/>";
+                                        echo "</td>";
+                                        if($balance60F > 0){
+                                          echo "<td style='color:red' > Ksh " . $balance60F . "</td>";
+                                        }
+                                        echo "<td> Ksh " . $balance60F . "</td>";
+                                        echo "</tr>";
+                                    }
+                                    echo "</tbody>";
+                                    echo "</table>";
+                                } else {
+                                    echo "</tbody>";
+                                    echo "</table>";
+                                    echo "<h4>CUSTOMER DATABASE IS EMPTY</h4>";
+                                }
+                            ?>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                       <h1> 30-59 Days past-due</h1>
+                       <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Shop Name</th>                                 
+                                    <th>Customer</th>                               
+                                    <th>Action</th>
+                                    <th>Amount</th>
+                                    
+                                </tr>
+                            </thead>
+                            <?php
+                                $accountModel = AccountModel::getInstance();
+                                $accountCollection = $accountModel->retrieveAccountCollection();
+                                $customerModel= CustomerModel::getInstance();
+                                echo "<id='example2'>";
+                                echo "<tbody>";
+                                if (!($accountCollection == null)) {
+                                    while(!$accountCollection->isEmpty()) {
+                                        $account = $accountCollection->extract();
+                                        $customer_id = $account->getCustomerId();
+                                        $customer = $customerModel->retrieveUser($customer_id);
+                                        $shopName = $customer->getShopName();
+                                        $phoneNumber = $customer->getPhoneNumber();
+                                        $first = $customer->getFirst();
+                                        $last = $customer->getLast();
+                                        
+                                        
+                                        $phoneNumberF = sprintf("%s-%s-%s-%s",
+                                        substr($phoneNumber, 0, 3),
+                                        substr($phoneNumber, 3, 3),
+                                        substr($phoneNumber, 6, 2),
+                                        substr($phoneNumber, 8, 4)
+                                        );
+          
+                                        $balance30 = $account->getAccountBalance2();
+                                        $balance30F = number_format($balance30, 2, '.', ',');
+                                        echo "<tr>";
+                                        echo "<td>" . $shopName. "</td>";
+                                        echo "<td>" . $first . " " . $last . "</td>";
+                                        echo"<td>";
+                                        echo "<a href ='SalesCustomerDetailView.php?view_invoice=".  $customer_id  ."'><button class='btn btn-info'>Account Details</button>"."<a/>";
+                                        echo "</td>";
+                                        if($balance30F > 0){
+                                          echo "<td style='color:red' > Ksh " . $balance30F . "</td>";
+                                        }
+                                        echo "<td> Ksh " . $balance30F . "</td>";
+                                        echo "</tr>";
+                                    }
+                                    echo "</tbody>";
+                                    echo "</table>";
+                                } else {
+                                    echo "</tbody>";
+                                    echo "</table>";
+                                    echo "<h4>CUSTOMER DATABASE IS EMPTY</h4>";
+                                }
+                            ?>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                       <h1> created 0-29 days ago</h1>
+                       <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Shop Name</th>                                 
+                                    <th>Customer</th>                               
+                                    <th>Action</th>
+                                    <th>Amount</th>
+                                    
+                                </tr>
+                            </thead>
+                            <?php
+                                $accountModel = AccountModel::getInstance();
+                                $accountCollection = $accountModel->retrieveAccountCollection();
+                                $customerModel= CustomerModel::getInstance();
+                                echo "<id='example2'>";
+                                echo "<tbody>";
+                                if (!($accountCollection == null)) {
+                                    while(!$accountCollection->isEmpty()) {
+                                        $account = $accountCollection->extract();
+                                        $customer_id = $account->getCustomerId();
+                                        $customer = $customerModel->retrieveUser($customer_id);
+                                        $shopName = $customer->getShopName();
+                                        $phoneNumber = $customer->getPhoneNumber();
+                                        $first = $customer->getFirst();
+                                        $last = $customer->getLast();
+                                        
+                                        
+                                        $phoneNumberF = sprintf("%s-%s-%s-%s",
+                                        substr($phoneNumber, 0, 3),
+                                        substr($phoneNumber, 3, 3),
+                                        substr($phoneNumber, 6, 2),
+                                        substr($phoneNumber, 8, 4)
+                                        );
+          
+                                        $balance30 = $account->getAccountBalance1();
+                                        $balance30F = number_format($balance30, 2, '.', ',');
+                                        echo "<tr>";
+                                        echo "<td>" . $shopName. "</td>";
+                                        echo "<td>" . $first . " " . $last . "</td>";
+                                        echo"<td>";
+                                        echo "<a href ='SalesCustomerDetailView.php?view_invoice=".  $customer_id  ."'><button class='btn btn-info'>Account Details</button>"."<a/>";
+                                        echo "</td>";
+                                        if($balance30F > 0){
+                                          echo "<td style='color:red' > Ksh " . $balance30F . "</td>";
+                                        }
+                                        echo "<td> Ksh " . $balance30F . "</td>";
+                                        echo "</tr>";
+                                    }
+                                    echo "</tbody>";
+                                    echo "</table>";
+                                } else {
+                                    echo "</tbody>";
+                                    echo "</table>";
+                                    echo "<h4>CUSTOMER DATABASE IS EMPTY</h4>";
+                                }
+                            ?>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+        </section>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
@@ -155,40 +460,12 @@
 <script src="../../plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- bs-custom-file-input -->
-<script src="../../plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+<!-- ChartJS -->
+<script src="../../plugins/chart.js/Chart.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../../dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../../dist/js/demo.js"></script>
-<script type="text/javascript">
-$(document).ready(function () {
-  bsCustomFileInput.init();
-});
-</script>
-<script>
-  $(document).ready(function() {
-      $("form").submit(function(event){
-        event.preventDefault();
-        
-        var username = $("#sales_form_username").val();
-        var password = $("#sales_form_password").val();
-        var first = $("#sales_form_first").val();
-        var last = $("#sales_form_last").val();
-        var phone_number = $("#sales_form_phone_number").val();
-        var message = $("#sales_form_message").val();
-        var submit = $("#sales_form_submit").val();
-        $(".sales_form_message").load("salesusercontroller.php", {
-            username: username,
-            password: password,
-            first: first,
-            last: last,
-            phone_number: phone_number,
-            message: message,
-            submit: submit
-          });
-      });
-    });
-</script>
+<!-- page script -->
 </body>
 </html>

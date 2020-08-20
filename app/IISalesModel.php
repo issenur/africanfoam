@@ -1,22 +1,22 @@
 <?php
 include_once("UserModel.php");
-include_once("SalesII.php");
-include_once("SalesIIEndUser.php");
+include_once("IISales.php");
+include_once("IISalesEndUser.php");
 include_once("Connection.php");
-class SalesIIModel extends UserModel {
+class IISalesModel extends UserModel {
+ 
+  // Constructor for a sales object.
+  private function __construct() {
+  
+  }
   
   //Field for singleton object 
   public static $instance = null;
   
-  // Constructor for a sales object.
-  function __construct(){
-  
-  }
-  
-  //Applying singleton pattern to Sales II  Model   
+  //Applying singleton pattern to Sales Model   
   public static function getInstance(){
       if (self::$instance == null){
-        self::$instance = new SalesIIModel();
+        self::$instance = new IISalesModel();
       }
       return self::$instance;
   }
@@ -35,7 +35,7 @@ class SalesIIModel extends UserModel {
     $phone_number = (int)$userObject->getPhoneNumber();
     
     $sql  = " INSERT INTO";
-    $sql .= "   sales_ii(first, last, phone_number, active)";
+    $sql .= "   sales_ii (first, last, phone_number, active)";
     $sql .= " VALUES('$first', '$last', '$phone_number', 1)";
   
     $stmt=$conn->prepare($sql);
@@ -82,7 +82,7 @@ class SalesIIModel extends UserModel {
       $phone_number = $row['phone_number'];
       $active = $row['active'];
       
-      $userObject = new SalesII($user_id, $first, $last, $phone_number, $active);
+      $userObject = new IISales($user_id, $first, $last, $phone_number, $active);
       return $userObject;
     }
   }

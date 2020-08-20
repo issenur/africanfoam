@@ -50,7 +50,8 @@ class MattressModel {
     return $mattress_id;
   }
   
- 
+  
+  
   // Retrieves a mattress object from the database
   function retrieveMattress($mattress_id) {
     
@@ -85,9 +86,48 @@ class MattressModel {
       $price = $row['price'];
       $active = $row['active'];
       
-      $mattressObject = new Mattress($mattress_id, $description, $size, $type, $price, $active);
+      $mattressObject = new Mattress($mattress_id, $type, $description, $size, $price, $active);
       return $mattressObject;
     }
+  }
+  
+  // Deactivates a mattress in the database
+  function deactivateMattress($mattress_id) {
+    
+    $connection = Connection::getInstance();
+    $conn = $connection->getConn();
+    
+    if ($conn->connect_error) {
+      die("Connection failed: " . $conn->connect_error);
+    }
+    
+    $sql  = " UPDATE";
+    $sql .= "   mattress";
+    $sql .= " SET active = 0";
+    $sql .= " WHERE mattress_id = '$mattress_id'";
+    
+    $stmt=$conn->prepare($sql);
+    $stmt->execute();
+  }
+  
+  
+  // activate Mattress in the database
+  function activateMattress($mattress_id) {
+    
+    $connection = Connection::getInstance();
+    $conn = $connection->getConn();
+    
+    if ($conn->connect_error) {
+      die("Connection failed: " . $conn->connect_error);
+    }
+    
+    $sql  = " UPDATE";
+    $sql .= "   mattress";
+    $sql .= " SET active = 1";
+    $sql .= " WHERE mattress_id = '$mattress_id'";
+    
+    $stmt=$conn->prepare($sql);
+    $stmt->execute();
   }
 }
 ?>

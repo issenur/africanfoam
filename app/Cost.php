@@ -2,27 +2,26 @@
 include_once("MattressCollection.php");
 class Cost{
   // Properties
-  public $mattressCollection;
+  public $mattress;
   public $quantity;
   public $discount;
  
   
-  // Constructor for a mattressCollection object.
-  function __construct($mattressCollection, $quantity, $discount){
-    $this->mattressCollection = $mattressCollection;
+  // Constructor for a mattress object.
+  function __construct($mattress, $quantity, $discount){
+    $this->mattress = $mattress;
     $this->quantity   = $quantity;
     $this->discount   = $discount;
   }
-  
- 
-  // Setter for mattressCollection 
-  function setMattressCollection($mattressCollection) {
-    $this->mattressCollection = $mattressCollection;
+
+  // Setter for mattress
+  function setMattress($mattress) {
+    $this->mattress = $mattress;
   }
 
-  // Getter for mattressCollection
-  function getMattressCollection() {
-    return $this->mattressCollection;
+  // Getter for mattress
+  function getMattress() {
+    return $this->mattress;
   }
   
   // Setter for quantity

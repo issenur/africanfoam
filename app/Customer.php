@@ -9,14 +9,16 @@ class Customer extends User {
   public $phone_number;
   public $acitve;
   
+  
   // Constructor for a sales object.
   function __construct($user_id, $shop_name, $first, $last, $phone_number, $active){
     $this->user_id = $user_id;
     $this->shop_name = $shop_name;
-    $this->first   = $first;
-    $this->last   = $last;
-    $this->phone_number   = $phone_number;
-    $this->active   = $active;
+    $this->first = $first;
+    $this->last = $last;
+    $this->phone_number = $phone_number;
+    $this->active = $active;
+   
   }
   
   // Setter for user_id 

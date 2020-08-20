@@ -1,11 +1,21 @@
 <?php
+    include_once("Invoice.php");
+    include_once("InvoiceModel.php");
+    include_once("CostModel.php");
+    include_once("PaymentModel.php");
     include_once("CustomerModel.php");
+    include_once("SalesModel.php");
     include_once("Model.php");
     include_once("Account.php");
     include_once("AccountModel.php");
     session_start();
-    if(!isset($_SESSION['username']) || $_SESSION['role'] != "Customer"){
+    if(!isset($_SESSION['username']) || $_SESSION['role'] != "Sales"){
         header("location:index.php");
+    }
+    
+    if(isset($_GET['view_invoice'])){
+        $customer_id = $_GET['view_invoice'];
+        $_SESSION['customer_id'] = $_GET['view_invoice'];
     }
 ?>
 <!DOCTYPE html>
@@ -72,11 +82,11 @@
              $model = new Model();
              $user_id = $model->getCurrentUserId();
              
-             $customerModel = CustomerModel::getInstance();
-             $customer = $customerModel->retrieveUser($user_id);
+             $salesModel = SalesModel::getInstance();
+             $sales = $salesModel->retrieveUser($user_id);
              
-             $firstname = $customer->getFirst();
-             $lastname = $customer->getLast();
+             $firstname = $sales->getFirst();
+             $lastname = $sales->getLast();
              
              echo $firstname . " " . $lastname;
             ?>
@@ -84,16 +94,18 @@
       </div>
 
       <!-- Sidebar Menu -->
+      <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <li class="nav-item">
-            <a href="CustomerView.php" class="nav-link active">
+            <a href="SalesPersonView.php" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
-              <p>Customer Dashboard</p>
+              <p>Salesman Dashboard</p>
             </a>
           </li>
         </ul>
       </nav>
+      <!-- /.sidebar-menu -->
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
@@ -126,8 +138,9 @@
                                 </tr>
                             </thead>
                             <?php
+                                $customer_id = $_SESSION['customer_id'];
                                 $accountModel = AccountModel::getInstance();
-                                $account = $accountModel->retrieveAccount($user_id);
+                                $account = $accountModel->retrieveAccount($customer_id);
 
                                 
                                 $costModel = CostModel::getInstance();
@@ -158,7 +171,7 @@
                                         echo "<tr>";
                                         echo "<td>" .$invoice_id. "</td>";
                                         echo"<td>";
-                                        echo "<a href ='InvoiceDetailView.php?view_invoice=".  $invoice_id  ."'><button class='btn btn-dark'>Details</button>"."<a/>";
+                                        echo "<a href ='SalesInvoiceDetailView.php?view_invoice=".  $invoice_id  ."'><button class='btn btn-dark'>Details</button>"."<a/>";
                                         echo "</td>";
                                         echo "<td> Ksh " . $totalCostF . "</td>";
                                         echo "<td> Ksh " . $totalPaymentF . "</td>";
