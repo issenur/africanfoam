@@ -21,16 +21,16 @@ if (isset($_POST['submit'])) {
         echo "<span class='text-danger'>Fill in all fields please</span>";
         $errorEmpty = true;
     }
-    elseif (!(strlen($size) == 5 )){
-      echo "<span class='text-danger'>Size format must be 00x00 </span>";
+    elseif ((strlen($size) < 4 ) ||(strlen($size) > 5 ) ){
+      echo "<span class='text-danger'>Size format must be 00x0 or 00x00 </span>";
         $errorSize = true;
     }
     elseif (strlen($type) > 7 ){
       echo "<span class='text-danger'>Type must be at most 6 characters long</span>";
         $errorType = true;
     }
-    elseif (strlen($description) < 8 ){
-      echo "<span class='text-danger'>Description must be at least 8 characters long</span>";
+    elseif (strlen($description) < 3 ){
+      echo "<span class='text-danger'>Description must be at least 3 characters long</span>";
         $errorDescription = true;
     }
     elseif ($price < 10){
@@ -41,7 +41,7 @@ if (isset($_POST['submit'])) {
         
         
         $mattressModel = MattressModel::getInstance();
-        $mattressObject = new Mattress($type, $description, $size, $price, 1);
+        $mattressObject = new Mattress(0, $type, $description, $size, $price, 1);
         $result = $mattressModel->addMattress($mattressObject);
         if($result > 1){
             echo "<span class='text-success'>Mattress successfully added</span>";
