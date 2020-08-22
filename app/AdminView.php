@@ -86,7 +86,7 @@
           <li class="nav-item">
             <a href="IISalesEndUserRegistrationView.php" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
-              <p>Register Salesperson II</p>
+              <p>Register Manager</p>
             </a>
           </li>
           <li class="nav-item">

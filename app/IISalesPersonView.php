@@ -103,7 +103,7 @@
           <li class="nav-item">
             <a href="IISalesPersonView.php" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
-              <p>Sales Manager Dashboard</p>
+              <p>Manager Dashboard</p>
             </a>
           </li>
         </ul>

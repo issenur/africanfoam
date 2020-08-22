@@ -88,7 +88,7 @@
         <label for="UserType">I am a :</label>
         <input type = "radio" name= "userType" value="Administrator" class="custom-radio" required>&nbsp;Admin  |
         <input type = "radio" name= "userType" value="Customer" class="custom-radio" required>&nbsp;Customer |
-        <input type = "radio" name= "userType" value="IISales" class="custom-radio" required>&nbsp;IISales |
+        <input type = "radio" name= "userType" value="IISales" class="custom-radio" required>&nbsp;Manager |
         <input type = "radio" name= "userType" value="Sales" class="custom-radio" required>&nbsp;Sales
       </div>
       <div class="row d-flex justify-content-center">
