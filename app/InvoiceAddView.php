@@ -171,13 +171,13 @@
                            </td>
                            </tr>
                           <tr>
-                            <th style="width: 70%">Mattress Name</th>
-                            <th style="width: 10%">Qty</th>
+                            <th style="width: 65%">Mattress Name</th>
+                            <th style="width: 15%">Qty</th>
                             <th style="width: 15%">Discount%</th>
                             <th style="width: 25%" ><button type="button" style="width: 30px" id="mattress_line_add" name="add" class="btn btn-success btn-sm add"><span class="glyphicon glyphicon-plus"> + </span></button></th>
                           </tr>
                           <tr>
-                            <td style="width: 70%">
+                            <td style="width: 65%">
                               <select id=mattress_form_id0 name="mattress_id[]" class="form-control mattress_id">
                               <option value="">--Select Mattress--</option>
                               <?php
@@ -190,12 +190,12 @@
                                   
                                   while($row = $result->fetch_assoc()) {
                                     $price = number_format($row['price'], 2, '.', ',');
-                                    echo "<option value=" . $row['mattress_id'] . ">" . $row['description'] . " Ksh" . $price . "</option>";
+                                    echo "<option value=" . $row['mattress_id'] . ">". $row['size']. " " . $row['description'] . " Ksh" . $price . "</option>";
                                   }   
                                 }
                               ?>
                             </td>
-                            <td style="width: 10%"><input id="mattress_form_quantity0" class="form-control quantity" type="text" name="quantity[]" placeholder="Qty"></td>
+                            <td style="width: 15%"><input id="mattress_form_quantity0" class="form-control quantity" type="text" name="quantity[]" placeholder="Qty"></td>
                             <td style="width: 15%"><input id="mattress_form_discount0" class="form-control discount" type="text" name="discount[]" placeholder="Percent%"></td>
                             <td style="width: 25%"><button class="btn btn-danger btn-sm remove" style="width: 30px" type="button" name="mattress_line_remove"><span class="glyphicon glyphicon-minus"> - </span></button></td>
                           </tr>
