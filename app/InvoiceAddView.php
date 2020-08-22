@@ -18,7 +18,7 @@
       $result = $conn->query($sql);
       while($row = $result->fetch_assoc()) {
         $price = number_format($row['price'], 2, '.', ',');
-        $output .= '<option value= "'. $row['mattress_id']. '">' . $row['description'] . " Ksh" . $price .'</option>';
+        $output .= '<option value= "'. $row['mattress_id']. '">'. $row['size'] . " " . $row['description'] . " Ksh" . $price .'</option>';
       }
       return $output;
     }
@@ -128,9 +128,9 @@
       <div class="container-fluid">
         <div class="row">
           <!-- left column -->
-          <div class="col-sm-2">
+          <div class="col-xs-2">
           </div>
-          <div class="col-sm-8">
+          <div class="col-xs-8">
             <!-- general form elements -->
             <div class="card card-info">
               <div class="card-header">
@@ -139,8 +139,8 @@
               <!-- /.card-header -->
               <form method="POST" id="invoice_add_form">
                 <div class= "card-body">       
-                  <div class= "row">
-                    <div class="col">
+                  <div class= "row-xs">
+                    <div class="col-xs">
                       <div class="table-fixed">
                         <span id="error"></span>
                         <table class="table table-borderless" id="invoice_table">
@@ -204,33 +204,33 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col">
-                      <div class="row">
-                        <div class="col-sm-4">
+                  <div class="row-xs">
+                    <div class="col-xs">
+                      <div class="row-xs">
+                        <div class="col-xs-4">
                         </div>
-                        <div class= "col-sm-8">
-                          <div class= "row">
-                            <div class= "col-sm-8">  
+                        <div class= "col-xs-8">
+                          <div class= "row-xs">
+                            <div class= "col-xs-8">  
                                <label> Payment Towards Invoice </label>
                             </div>
-                            <div class= "col-sm-4">
+                            <div class= "col-xs-4">
                                 <label>  Date   </label>
                             </div>
                           </div>
                         </div>
                       </div>
                       <div class= "row">
-                        <div class="col-sm-4">
+                        <div class="col-xs-4">
                         </div>
-                        <div class= "col-sm-8">
-                          <div class= "row">
-                            <div class= "col-sm-8">  
+                        <div class= "col-xs-8">
+                          <div class= "row-xs">
+                            <div class= "col-xs-6">  
                               <div class="form-group">
                                 <input type="text"  class="form-control amount" id="mattress_form_amount"  name="amount" placeholder="Ksh 0000.00">
                               </div>
                             </div>
-                            <div class= "col-sm-4">
+                            <div class= "col-xs-6">
                               <div class="form-group">
                                 <div class="input-group">
                                   <div class="input-group-prepend">
