@@ -18,7 +18,7 @@
       $result = $conn->query($sql);
       while($row = $result->fetch_assoc()) {
         $price = number_format($row['price'], 2, '.', ',');
-        $output .= '<option value= "'. $row['mattress_id']. '">'. $row['size'] . " " . $row['description'] . " Ksh" . $price .'</option>';
+        $output .= '<option value= "'. $row['mattress_id']. '">'. $row['size']. " " . $row['description'] . " Ksh" . $price .'</option>';
       }
       return $output;
     }
@@ -128,9 +128,9 @@
       <div class="container-fluid">
         <div class="row">
           <!-- left column -->
-          <div class="col-xs-2">
+          <div class="col-sm-2">
           </div>
-          <div class="col-xs-8">
+          <div class="col-sm-8">
             <!-- general form elements -->
             <div class="card card-info">
               <div class="card-header">
@@ -139,8 +139,8 @@
               <!-- /.card-header -->
               <form method="POST" id="invoice_add_form">
                 <div class= "card-body">       
-                  <div class= "row-xs">
-                    <div class="col-xs">
+                  <div class= "row">
+                    <div class="col-sm">
                       <div class="table-fixed">
                         <span id="error"></span>
                         <table class="table table-borderless" id="invoice_table">
@@ -172,7 +172,7 @@
                            </tr>
                           <tr>
                             <th style="width: 65%">Mattress Name</th>
-                            <th style="width: 15%">Qty</th>
+                            <th style="width: 15%">Quantity</th>
                             <th style="width: 15%">Discount%</th>
                             <th style="width: 25%" ><button type="button" style="width: 30px" id="mattress_line_add" name="add" class="btn btn-success btn-sm add"><span class="glyphicon glyphicon-plus"> + </span></button></th>
                           </tr>
@@ -195,7 +195,7 @@
                                 }
                               ?>
                             </td>
-                            <td style="width: 15%"><input id="mattress_form_quantity0" class="form-control quantity" type="text" name="quantity[]" placeholder="Qty"></td>
+                            <td style="width: 15%"><input id="mattress_form_quantity0" class="form-control quantity" type="text" name="quantity[]" placeholder="Quantity"></td>
                             <td style="width: 15%"><input id="mattress_form_discount0" class="form-control discount" type="text" name="discount[]" placeholder="Percent%"></td>
                             <td style="width: 25%"><button class="btn btn-danger btn-sm remove" style="width: 30px" type="button" name="mattress_line_remove"><span class="glyphicon glyphicon-minus"> - </span></button></td>
                           </tr>
@@ -204,33 +204,33 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row-xs">
-                    <div class="col-xs">
-                      <div class="row-xs">
-                        <div class="col-xs-4">
+                  <div class="row">
+                    <div class="col-sm">
+                      <div class="row">
+                        <div class="col-sm-3">
                         </div>
-                        <div class= "col-xs-8">
-                          <div class= "row-xs">
-                            <div class= "col-xs-8">  
+                        <div class= "col-sm-9">
+                          <div class= "row">
+                            <div class= "col-sm-8">  
                                <label> Payment Towards Invoice </label>
                             </div>
-                            <div class= "col-xs-4">
-                                <label>  Date   </label>
+                            <div class= "col-sm-4">
+                                <label>  Date of Payment   </label>
                             </div>
                           </div>
                         </div>
                       </div>
                       <div class= "row">
-                        <div class="col-xs-4">
+                        <div class="col-sm-3">
                         </div>
-                        <div class= "col-xs-8">
-                          <div class= "row-xs">
-                            <div class= "col-xs-6">  
+                        <div class= "col-sm-9">
+                          <div class= "row">
+                            <div class= "col-sm-8">  
                               <div class="form-group">
                                 <input type="text"  class="form-control amount" id="mattress_form_amount"  name="amount" placeholder="Ksh 0000.00">
                               </div>
                             </div>
-                            <div class= "col-xs-6">
+                            <div class= "col-sm-4">
                               <div class="form-group">
                                 <div class="input-group">
                                   <div class="input-group-prepend">
