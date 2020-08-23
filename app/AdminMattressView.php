@@ -102,9 +102,9 @@
                             <thead>
                                 <tr>
                                     <th>Mattress ID#</th>
-                                    <th>Type</th>
-                                    <th>Description</th>
                                     <th>Size</th>
+                                    <th>Description</th>
+                                    <th>Abbreviation</th>
                                     <th>Price</th>
                                     <th>Action</th>
 
@@ -119,7 +119,7 @@
                                     die("Connection failed: " . $conn->connect_error);
                                 }
                                 
-                                $sql  = "select mattress_id, type, description, size, price from mattress where active = 1 order by description ASC";
+                                $sql  = "select mattress_id, type, description, size, price from mattress where active = 1 order by description ASC , size ASC";
                             
                          
                                 $result = $conn->query($sql);
@@ -129,10 +129,11 @@
                                     while($row = $result->fetch_assoc()) {
                                       echo "<tr>";
                                       echo "<td>" . $row['mattress_id'] . "</td>";
-                                      echo "<td>" . $row['type'] . "</td>";
-                                      echo "<td>" . $row['description'] . "</td>";
+                                     
                                       echo "<td>" . $row['size'] . "</td>";
-                                      echo "<td>" . $row['price'] . "</td>";
+                                      echo "<td>" . $row['description'] . "</td>";
+                                       echo "<td>" . $row['type'] . "</td>";
+                                      echo "<td>Ksh " . $row['price'] . "</td>";
                                       echo"<td>";
                                       echo "<a href ='AdminMattressViewController.php?delete_mattress=".  $row['mattress_id'] ."'><button class='btn btn-danger'>Deactivate</button>"."<a/>";
                                       echo "</td>"; 
@@ -169,7 +170,7 @@
                                     die("Connection failed: " . $conn->connect_error);
                                 }
                                 
-                                $sql  = "select mattress_id, type, description, size, price from mattress where active = 0 order by description ASC";
+                                $sql  = "select mattress_id, type, description, size, price from mattress where active = 0 order by description ASC , size ASC";
                             
                          
                                 $result = $conn->query($sql);
@@ -182,7 +183,7 @@
                                       echo "<td>" . $row['type'] . "</td>";
                                       echo "<td>" . $row['description'] . "</td>";
                                       echo "<td>" . $row['size'] . "</td>";
-                                      echo "<td>" . $row['price'] . "</td>";
+                                      echo "<td>Ksh " . $row['price'] . "</td>";
                                       echo"<td>";
                                       echo "<a href ='AdminMattressViewController.php?activate_mattress=".  $row['mattress_id'] ."'><button class='btn btn-success'>Activate</button>"."<a/>";
                                       echo "</td>"; 

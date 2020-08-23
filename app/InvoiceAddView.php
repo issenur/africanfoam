@@ -14,7 +14,7 @@
 
     function fill_unit_select_box($conn){
       $output = "";
-      $sql = "SELECT * FROM mattress where active = 1 ORDER by Price DESC";
+      $sql = "SELECT * FROM mattress where active = 1 ORDER by description ASC, size ASC";
       $result = $conn->query($sql);
       while($row = $result->fetch_assoc()) {
         $price = number_format($row['price'], 2, '.', ',');
@@ -183,7 +183,7 @@
                               <?php
                                 $connection = Connection::getInstance();
                                 $conn = $connection->getConn();
-                                $sql = "SELECT * FROM mattress WHERE active = 1 ORDER by Price DESC";
+                                $sql = "SELECT * FROM mattress where active = 1 ORDER by description ASC, size ASC";
                                 $result = $conn->query($sql);
                                 
                                 if ($result->num_rows > 0) {       
