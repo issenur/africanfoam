@@ -103,7 +103,7 @@
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Salesman Registration Form</h3>
+                <h3 class="card-title">Manager Registration Form</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->

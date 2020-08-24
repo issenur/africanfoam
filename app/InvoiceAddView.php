@@ -310,7 +310,7 @@ $(document).ready(function(){
       html += '<option value="">--Select Mattress--</option>';
       html += '<?php echo fill_unit_select_box($conn); ?>';
       html += '</td>';
-      html += '<td><input type="text"  class="form-control quantity" id="mattress_form_quantity' + counter + ' "  name="quantity[]" placeholder="Qty"></td>';
+      html += '<td><input type="text"  class="form-control quantity" id="mattress_form_quantity' + counter + ' "  name="quantity[]" placeholder="Quantity"></td>';
       html += '<td><input type="text"  class="form-control discount" id="mattress_form_discount' + counter + ' "  name="discount[]" placeholder="Percent%"></td>';
       html += '<td><button style="width: 30px" class="btn btn-danger btn-sm remove" type="button" name="remove"><span class="glyphicon glyphicon-minus">-</span></button> </td>';
       html += '</tr>'

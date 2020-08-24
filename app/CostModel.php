@@ -120,7 +120,9 @@ class CostModel {
       $costNum = ($price * $discount) * $quantity;
       $num = $num + $costNum;
     }
-    return 0-$num;
+    return 0-($num * 1.16);
   }
+  
+  
 }
 ?>

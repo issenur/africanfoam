@@ -108,170 +108,185 @@
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
         <section class="content-header" style="padding: 0px 0px 0px 0px" >
-            <div class="container-fluid " style="padding: 0px 0px 0px 0px" >
-                <div class ="row" style="padding: 20px 20px 0px 20px">
-                    <div class="col">
-                        <h1>Invoice#
-                        <?php
-                            $invoice = $_SESSION['invoice_id'];
-                            echo (int)$invoice_id;
-                        ?>
-                        </h1>
-                    </div>
-                </div>
-                <div class="row pl-5" style="min-height:62vh" style="min-width:100vw" >
-                    <div class= "col" style="min-height:62vh" style="min-width:100vw" >
-                      <div class="row pl-5" style="min-height:46vh" style="min-width:100vw" >            
-                        <table id="example4" class="table table-borderless table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Qty</th>
-                                    <th>size</th>
-                                    <th>Mattress Desc</th>
-                                    <th>Price each</th>
-                                    <th>Discount</th>
-                                    <th>Before Discount</th>
-                                    <th>Total Price</th>
-                                </tr>
-                            </thead>
-                            <?php
-                                $invoiceModel = InvoiceModel::getInstance();
-                                $invoice = $invoiceModel->retrieveInvoice($invoice);
-                                $dateTime = $invoice->getDate();
-                                $date1 = new DateTime($dateTime);
-                                $date = $date1->format('d-M-Y');
-                                $costCollection = $invoice->getCostCollection();
-                                $costModel = CostModel::getInstance();
-                                $totalCost = $costModel->getTotalCost($costCollection);
-                                $totalCostF = number_format( (-1 * $totalCost), 2, '.', ',');
-                                
-
-                                echo "<id='example2'>";
-                                echo "<tbody>";
-                                if (!($costCollection == null)) {
-                                    
-                                    while(!$costCollection->isEmpty()) {
-                                        $cost = $costCollection->extract();
-                                        
-                                        $mattress = $cost->getMattress();
-                                        $mattress_desc = $mattress->getDescription();
-                                        $mattress_size = $mattress->getSize();
-                                        $price = $mattress->getPrice();
-                                        $priceF = number_format($price, 2, '.', ',');
-                                        $quantity = $cost->getQuantity();
-                                        $discount = $cost->getDiscount();
-                                        $discountF = number_format($discount, 1, '.', '');
-                                        $postTotal = $price * $quantity;
-                                        $postTotalF = number_format($postTotal, 2, '.', ',');
-                                        $lineTotal = $price * $quantity  * (1 - ($discount / 100));
-                                        $lineTotalF = number_format($lineTotal, 2, '.', ',');
-                                        
-
-
-                                        echo "<tr>";
-                                        echo "<td>". "  ". $quantity . ".0 </td>";
-                                        echo "<td>". "  ". $mattress_size . " </td>";
-                                        echo "<td>" . $mattress_desc . "</td>";
-                                        echo "<td> Ksh " . $priceF . "</td>";
-                                        echo "<td>" . $discountF . "%</td>";
-                                        echo "<td> Ksh " . $postTotalF . "</td>";
-                                        echo "<td> Ksh " . $lineTotalF . "</td>";
-                                        echo "</tr>";
-                                    }
-                                    echo "</tbody>";
-                                    echo "</table>";
-                                } else {
-                                    echo "</tbody>";
-                                    echo "</table>";
-                                    echo "<h4>CUSTOMER HAS ZERO INVOICES</h4>";
-                                }
-                            ?>
-                      </div>
-                      <div class="row pl-5" style="min-height:23vh; min-width:60vw" >
-                          <div class="col-4">
-                            
-                          </div>
-                          <div class="col-7">
-                            <table id="example4" class="table table-borderless table-hover">
-                              <thead>
-                                  <tr>
-                                      <th>Collected By</th>
-                                      <th>Amount Paid</th>
-                                      <th>Date of Payment</th>
-                                      
-                                  </tr>
-                              </thead>
-                              <?php
-                                  $paymentCollection = $invoice->getPaymentCollection();
-                                  $paymentModel = PaymentModel::getInstance();
-                                  $totalPayment = $paymentModel->getTotalPayment($paymentCollection);
-                                  $totalPaymentF = number_format($totalPayment, 2, '.', ',');
-                                  $grandTotal = $totalCost + $totalPayment;
-                                  $grandTotal1F = number_format($grandTotal, 2, '.', ',');
-                                  $grandTotal2F = number_format(-1 * $grandTotal, 2, '.', ',');
-                                          
-                                  
-                                  echo "<id='example2'>";
-                                  echo "<tbody>";
-                                  if (!($paymentCollection == null)) {   
-                                      while(!$paymentCollection->isEmpty()) {
-                                          $payment = $paymentCollection->extract();
-                                          $amount = $payment->getAmount();
-                                          $sales = $payment->getSales();
-                                          $salesFirst = $sales->getFirst();
-                                          $salesLast = $sales->getLast();
-                                          $amountF = number_format($amount, 2, '.', ',');
-                                          $dateTime = $payment->getDate();
-                                          $date1 = new DateTime($dateTime);
-                                          $datePay = $date1->format('d-M-Y');
-                                          echo "<tr>";
-                                          echo "<td>" . $salesFirst . " " . " $salesLast" ."</td>";
-                                          echo "<td> Ksh " . $amountF . "</td>";
-                                          echo "<td>" . $datePay . "</td>";
-                                          echo "</tr>";
-                                      }
-                                      echo "</tbody>";
-                                      echo "</table>";
-                                  } else {
-                                      echo "</tbody>";
-                                      echo "</table>";
-                                      echo "<h4>CUSTOMER HAS ZERO INVOICES</h4>";
-                                  }
-                              ?>
-                          </div>
-                           <div class="col-1">
-                            
-                          </div>
-                    </div>
-                </div>
-              </div>
-            </section>
-                <div class="row-auto" style="min-height:14vh;  min-width:60vw">
-                    <div class= "col" style="background-color:lightblue; min-height:14vh"  >
-                        <?php
-                            echo "<div class='row '>";
-                                echo "<div class ='col '>";
-                                    echo "<h3>Shop Name</h3>";
-                                    echo "<h5>" . $shopName. "</h5>";
-                                echo "</div>";
-                                echo "<div class = 'col-auto '>";
-                                    echo "<h3 >Total Invoice Cost: Ksh " . $totalCostF . "</h3>";
-                                    echo "<h5>Total Paid Towards: Ksh " . $totalPaymentF . "</h5>";
-                                    if($grandTotal > 0){
-                                      echo "<h5>Invoice Fully Paid Credit: Ksh " .  $grandTotal1F . "</h5>";
-                                    }else{
-                                      echo "<h5>Remaining Balance: Ksh " .  $grandTotal2F . "</h5>";
-                                    }
-                                echo "</div>";
-                            echo "</div>";
-                        ?>
-                    </div>
+          <div class="container-fluid " style="padding: 0px 0px 0px 0px" >
+            <div class ="row" style="padding: 20px 20px 0px 20px">
+                <div class="col">
+                    <h1>Invoice#
+                    <?php
+                        $invoice = $_SESSION['invoice_id'];
+                        echo (int)$invoice_id;
+                    ?>
+                    </h1>
                 </div>
             </div>
-            <!-- /.container-fluid -->
+            <div class="row pl-5" style="min-height:62vh" style="min-width:100vw" >
+              <div class= "col" style="min-height:62vh" style="min-width:100vw" >
+                <div class="row pl-5" style="min-height:46vh" style="min-width:100vw" >            
+                  <table id="example4" class="table table-borderless table-hover">
+                      <thead>
+                          <tr>
+                              <th>Qty</th>
+                              <th>Size</th>
+                              <th>Description</th>
+                              <th>Price ea.</th>
+                              <th>Discount</th>
+                              <th>wo/ Discount</th>
+                              <th>after Discount</th>
+                              <th>16% VAT</th>
+                              <th>Item Total</th>
+                          </tr>
+                      </thead>
+                      <?php
+                          $invoiceModel = InvoiceModel::getInstance();
+                          $invoice = $invoiceModel->retrieveInvoice($invoice);
+                          $customer = $invoice->getCustomer();
+                          $shopName = $customer->getShopName();
+                      
+                          $dateTime = $invoice->getDate();
+                          $date1 = new DateTime($dateTime);
+                          $date = $date1->format('d-M-Y');
+                          $costCollection = $invoice->getCostCollection();
+                          $costModel = CostModel::getInstance();
+                          $totalCost = $costModel->getTotalCost($costCollection);
+                          
+                          $subTotalCostF = number_format( -1 * $totalCost +  ($totalCost - ($totalCost / 1.16 )), 2, '.', ',');
+                          $taxTotal = $totalCost - ($totalCost / 1.16 );
+                          $taxTotalF = number_format(( -1 * $taxTotal ), 2, '.', ',');
+                          
+
+                          echo "<id='example2'>";
+                          echo "<tbody>";
+                          if (!($costCollection == null)) {
+                              
+                              while(!$costCollection->isEmpty()) {
+                                  $cost = $costCollection->extract();
+                                  
+                                  $mattress = $cost->getMattress();
+                                  $quantity = $cost->getQuantity();
+                                  $size = $mattress->getSize();
+                                  $description = $mattress->getDescription();
+                                  $price = $mattress->getPrice();
+                                  $discount = $cost->getDiscount();
+
+                                  $beforeDiscount = $price * $quantity;
+                                  $afterDiscount = $beforeDiscount  * (1 - ($discount / 100));
+                                  $tax = ($afterDiscount * 0.16);
+                                  $total = $afterDiscount + $tax;
+                                  
+
+                                  $priceF = number_format($price, 2, '.', ',');
+                                  $discountF = number_format($discount, 1, '.', '');
+                                  $beforeDiscountF = number_format($beforeDiscount, 2, '.', ',');
+                                  $afterDiscountF = number_format($afterDiscount, 2, '.', ',');
+                                  $taxF = number_format($tax, 2, '.', ',');
+                                  $totalF = number_format($total, 2, '.', ',');
+
+                                  echo "<tr>";
+                                  echo "<td>". "  ". $quantity . ".0 </td>";
+                                  echo "<td>" . $size . "</td>";
+                                  echo "<td>" . $description . "</td>";
+                                  echo "<td> Ksh " . $priceF . "</td>";
+                                  echo "<td>" . $discountF . "%</td>";
+                                  echo "<td> Ksh " . $beforeDiscountF . "</td>";
+                                  echo "<td> Ksh " . $afterDiscountF . "</td>";
+                                  echo "<td> Ksh " . $taxF . "</td>";
+                                  echo "<td> Ksh " . $totalF . "</td>";
+                                  echo "</tr>";
+                              }
+                              echo "</tbody>";
+                              echo "</table>";
+                          } else {
+                              echo "</tbody>";
+                              echo "</table>";
+                              echo "<h4>CUSTOMER HAS ZERO INVOICES</h4>";
+                          }
+                      ?>
+                </div>
+                <div class="row pl-5" style="min-height:23vh; min-width:60vw" >
+                  <div class="col-4">
+                    
+                  </div>
+                  <div class="col-7">
+                    <table id="example4" class="table table-borderless table-hover">
+                      <thead>
+                          <tr>
+                              <th>Collected By</th>
+                              <th>Amount Paid</th>
+                              <th>Date of Payment</th>
+                              
+                          </tr>
+                      </thead>
+                      <?php
+                          $paymentCollection = $invoice->getPaymentCollection();
+                          $paymentModel = PaymentModel::getInstance();
+                          $totalPayment = $paymentModel->getTotalPayment($paymentCollection);
+                          $totalPaymentF = number_format($totalPayment, 2, '.', ',');
+                          $grandTotal = $totalCost + $totalPayment;
+                          $grandTotal1F = number_format($grandTotal, 2, '.', ',');
+                          $grandTotal2F = number_format(-1 * $grandTotal, 2, '.', ',');
+                                  
+                          
+                          echo "<id='example2'>";
+                          echo "<tbody>";
+                          if (!($paymentCollection == null)) {   
+                              while(!$paymentCollection->isEmpty()) {
+                                  $payment = $paymentCollection->extract();
+                                  $amount = $payment->getAmount();
+                                  $sales = $payment->getSales();
+                                  $salesFirst = $sales->getFirst();
+                                  $salesLast = $sales->getLast();
+                                  $amountF = number_format($amount, 2, '.', ',');
+                                  $dateTime = $payment->getDate();
+                                  $date1 = new DateTime($dateTime);
+                                  $datePay = $date1->format('d-M-Y');
+                                  echo "<tr>";
+                                  echo "<td>" . $salesFirst . " " . " $salesLast" ."</td>";
+                                  echo "<td> Ksh " . $amountF . "</td>";
+                                  echo "<td>" . $datePay . "</td>";
+                                  echo "</tr>";
+                              }
+                              echo "</tbody>";
+                              echo "</table>";
+                          } else {
+                              echo "</tbody>";
+                              echo "</table>";
+                              echo "<h4>CUSTOMER HAS ZERO INVOICES</h4>";
+                          }
+                      ?>
+                  </div>
+                  <div class="col-1">
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
+        <div class="row-auto" style="min-height:14vh;  min-width:60vw">
+            <div class= "col" style="background-color:lightblue; min-height:14vh"  >
+                <?php
+                    echo "<div class='row '>";
+                        echo "<div class ='col '>";
+                            echo "<h3>Shop Name</h3>";
+                            echo "<h5>" . $shopName. "</h5>";
+                        echo "</div>";
+                        echo "<div class = 'col-auto text-right'>";
+                            echo "<h5>total charge wo/tax: Ksh " . $subTotalCostF . "</h3>";
+                            echo "<h5>tax charge:&nbsp;&nbsp Ksh " . $taxTotalF . "</h3>";
+                            
+                            echo "<h5>total paid:&nbsp;&nbsp Ksh " . $totalPaymentF . "</h3>";
+                            echo "----------------------------------------------";
+                            if($grandTotal > 0){
+                              echo "<h5><strong>Invoice Fully Paid: Credit Ksh +" .  $grandTotal1F . "</strong></h5>";
+                            }else{
+                              echo "<h5><strong>Remaining Balance: Ksh " .  $grandTotal2F . "</strong></h5>";
+                            }
+                        echo "</div>";
+                    echo "</div>";
+                ?>
+            </div>
+        </div>
     </div>
   
   <!-- Control Sidebar -->

@@ -137,6 +137,7 @@ class InvoiceModel {
     $paymentCollection = clone $pc;
     
     $totalCost = $costModel->getTotalCost($costCollection);
+    
     $totalPayment = $paymentModel->getTotalPayment($paymentCollection);
     
     $invoiceBalance = $totalPayment + $totalCost;

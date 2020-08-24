@@ -184,7 +184,7 @@
                                             echo "<a href ='AdminViewController.php?delete_customer=".  $row['username'] ."'><button class='btn btn-danger'>Deactivate</button>"."<a/>";
                                             echo "</td>"; 
                                         }else if(!($row['sales_ii_id'] == NULL)){
-                                            echo "<td>Sales II</td>";
+                                            echo "<td>Manager</td>";
                                             echo "<td>" . $row['sales_ii_id'] . "</td>";
                                             echo "<td>" . $row['username'] . "</td>";
                                             echo "<td>" . $row['pfirst'] . "</td>";
@@ -268,7 +268,7 @@
                                             echo "<a href ='AdminViewController.php?activate_customer=".  $row['username'] ."'><button class='btn btn-success' style='width: 100px' >Activate</button>"."<a/>";
                                             echo "</td>"; 
                                         }else if(!($row['sales_ii_id'] == NULL)){
-                                            echo "<td>Sales II</td>";
+                                            echo "<td>Manager</td>";
                                             echo "<td>" . $row['sales_ii_id'] . "</td>";
                                             echo "<td>" . $row['username'] . "</td>";
                                             echo "<td>" . $row['pfirst'] . "</td>";
