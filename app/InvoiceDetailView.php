@@ -172,7 +172,7 @@
 
                                         echo "<tr>";
                                         echo "<td>". "  ". $quantity . ".0 </td>";
-                                        echo "<td>". "  ". $size . " </td>";
+                                        echo "<td>". "  ". $mattres_size . " </td>";
                                         echo "<td>" . $mattress_desc . "</td>";
                                         echo "<td> Ksh " . $priceF . "</td>";
                                         echo "<td>" . $discountF . "%</td>";
