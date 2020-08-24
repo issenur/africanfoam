@@ -14,11 +14,11 @@
 
     function fill_unit_select_box($conn){
       $output = "";
-      $sql = "SELECT * FROM mattress where active = 1 ORDER by description ASC, size ASC";
+      $sql = "SELECT * FROM mattress where active = 1 ORDER by type ASC, size ASC";
       $result = $conn->query($sql);
       while($row = $result->fetch_assoc()) {
         $price = number_format($row['price'], 2, '.', ',');
-        $output .= '<option value= "'. $row['mattress_id']. '">'. $row['size']. " " . $row['description'] . " Ksh" . $price .'</option>';
+        $output .= '<option value= "'. $row['mattress_id']. '">'. $row['size']. " " . $row['type'] . " Ksh" . $price .'</option>';
       }
       return $output;
     }
@@ -183,14 +183,14 @@
                               <?php
                                 $connection = Connection::getInstance();
                                 $conn = $connection->getConn();
-                                $sql = "SELECT * FROM mattress where active = 1 ORDER by description ASC, size ASC";
+                                $sql = "SELECT * FROM mattress where active = 1 ORDER by type ASC, size ASC";
                                 $result = $conn->query($sql);
                                 
                                 if ($result->num_rows > 0) {       
                                   
                                   while($row = $result->fetch_assoc()) {
                                     $price = number_format($row['price'], 2, '.', ',');
-                                    echo "<option value=" . $row['mattress_id'] . ">". $row['size']. " " . $row['description'] . " Ksh" . $price . "</option>";
+                                    echo "<option value=" . $row['mattress_id'] . ">". $row['size']. " " . $row['type'] . " Ksh" . $price . "</option>";
                                   }   
                                 }
                               ?>
