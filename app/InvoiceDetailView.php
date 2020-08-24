@@ -128,6 +128,7 @@
                             <thead>
                                 <tr>
                                     <th>Qty</th>
+                                    <th>size</th>
                                     <th>Mattress Desc</th>
                                     <th>Price each</th>
                                     <th>Discount</th>
@@ -156,6 +157,7 @@
                                         
                                         $mattress = $cost->getMattress();
                                         $mattress_desc = $mattress->getDescription();
+                                        $mattress_size = $mattress->getSize();
                                         $price = $mattress->getPrice();
                                         $priceF = number_format($price, 2, '.', ',');
                                         $quantity = $cost->getQuantity();
@@ -170,6 +172,7 @@
 
                                         echo "<tr>";
                                         echo "<td>". "  ". $quantity . ".0 </td>";
+                                        echo "<td>". "  ". $size . " </td>";
                                         echo "<td>" . $mattress_desc . "</td>";
                                         echo "<td> Ksh " . $priceF . "</td>";
                                         echo "<td>" . $discountF . "%</td>";
