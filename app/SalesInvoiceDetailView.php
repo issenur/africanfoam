@@ -115,8 +115,8 @@
         <!-- Content Header (Page header) -->
         <section class="content-header" style="padding: 0px 0px 0px 0px" >
           <div class="container-fluid " style="padding: 0px 0px 0px 0px" >
-            <div class ="row" style="padding: 20px 20px 0px 20px">
-                <div class="col">
+            <div class ="row-sm" style="padding: 20px 20px 0px 20px">
+                <div class="col-sm">
                     <h1>Invoice#
                     <?php
                         $invoice = $_SESSION['invoice_id'];
@@ -125,9 +125,9 @@
                     </h1>
                 </div>
             </div>
-            <div class="row pl-5" style="min-height:62vh" style="min-width:100vw" >
-              <div class= "col" style="min-height:62vh" style="min-width:100vw" >
-                <div class="row pl-5" style="min-height:46vh" style="min-width:100vw" >            
+            <div class="row-sm pl-5" style="min-height:62vh" style="min-width:100vw" >
+              <div class= "col-sm" style="min-height:62vh" style="min-width:100vw" >
+                <div class="row-sm pl-5" style="min-height:46vh" style="min-width:100vw" >            
                   <table id="example4" class="table table-borderless table-hover">
                       <thead>
                           <tr>
@@ -208,11 +208,11 @@
                           }
                       ?>
                 </div>
-                <div class="row pl-5" style="min-height:23vh; min-width:60vw" >
-                  <div class="col-4">
+                <div class="row-sm pl-5" style="min-height:23vh; min-width:60vw" >
+                  <div class="col-sm-4">
                     
                   </div>
-                  <div class="col-7">
+                  <div class="col-sm-7">
                     <table id="example4" class="table table-borderless table-hover">
                       <thead>
                           <tr>
@@ -260,7 +260,7 @@
                           }
                       ?>
                   </div>
-                  <div class="col-1">
+                  <div class="col-sm-1">
                     
                   </div>
                 </div>
@@ -271,12 +271,12 @@
         <div class="row-auto" style="min-height:14vh;  min-width:60vw">
             <div class= "col" style="background-color:lightblue; min-height:14vh"  >
                 <?php
-                    echo "<div class='row '>";
-                        echo "<div class ='col '>";
+                    echo "<div class='row-sm'>";
+                        echo "<div class ='col-sm'>";
                             echo "<h3>Shop Name</h3>";
                             echo "<h5>" . $shopName. "</h5>";
                         echo "</div>";
-                        echo "<div class = 'col-auto text-right'>";
+                        echo "<div class = 'col-sm-auto text-right'>";
                             echo "<h5>total charge wo/tax: Ksh " . $subTotalCostF . "</h3>";
                             echo "<h5>tax charge:&nbsp;&nbsp Ksh " . $taxTotalF . "</h3>";
                             

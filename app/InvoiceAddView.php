@@ -110,6 +110,17 @@
           </li>
         </ul>
       </nav>
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item">
+            <a href="logout.php" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Logout</p>
+            </a>
+          </li>
+        </ul>
+      </nav>
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
@@ -123,148 +134,165 @@
       </div><!-- /.container-fluid -->
     </section>
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
         <div class="row">
-          <!-- left column -->
-          <div class="col-sm-2">
-          </div>
-          <div class="col-sm-8">
-            <!-- general form elements -->
-            <div class="card card-info">
-              <div class="card-header">
-                <h3 class="card-title">Create Invoice Form</h3>
-              </div>
-              <!-- /.card-header -->
-              <form method="POST" id="invoice_add_form">
-                <div class= "card-body">       
-                  <div class= "row">
-                    <div class="col-sm">
-                      <div class="table-fixed">
-                        <span id="error"></span>
-                        <table class="table table-borderless" id="invoice_table">
-                        <tbody>
-                           <tr>
-                            <th style="width: 50%">
-                              <label>Invoice Customer</label>
-                            </th>
-                           </tr>
-                           <tr>
-                           <td style="width: 50%">
-                              <select id=customer_id name="customer_id" class="form-control customer_id">
-                              <option value="">--Select Shop Name--</option>
-                              <?php
-                                $connection = Connection::getInstance();
-                                $conn = $connection->getConn();
-                                $sql = "SELECT * FROM customer ORDER by first ASC";
-                                $result = $conn->query($sql);
-                                
-                                if ($result->num_rows > 0) {       
-                                  
-                                  while($row = $result->fetch_assoc()) {
-                                    echo "<option value=" . $row['customer_id'] . ">" . $row['shop_name'] . "</option>";
-                                  }   
-                                }
-                              ?>
-                              </select>
-                           </td>
-                           </tr>
-                          <tr>
-                            <th style="width: 65%">Mattress Name</th>
-                            <th style="width: 15%">Quantity</th>
-                            <th style="width: 15%">Discount%</th>
-                            <th style="width: 25%" ><button type="button" style="width: 30px" id="mattress_line_add" name="add" class="btn btn-success btn-sm add"><span class="glyphicon glyphicon-plus"> + </span></button></th>
-                          </tr>
-                          <tr>
-                            <td style="width: 65%">
-                              <select id=mattress_form_id0 name="mattress_id[]" class="form-control mattress_id">
-                              <option value="">--Select Mattress--</option>
-                              <?php
-                                $connection = Connection::getInstance();
-                                $conn = $connection->getConn();
-                                $sql = "SELECT * FROM mattress where active = 1 ORDER by type ASC, size ASC";
-                                $result = $conn->query($sql);
-                                
-                                if ($result->num_rows > 0) {       
-                                  
-                                  while($row = $result->fetch_assoc()) {
-                                    $price = number_format($row['price'], 2, '.', ',');
-                                    echo "<option value=" . $row['mattress_id'] . ">". $row['size']. " " . $row['type'] . " Ksh" . $price . "</option>";
-                                  }   
-                                }
-                              ?>
-                            </td>
-                            <td style="width: 15%"><input id="mattress_form_quantity0" class="form-control quantity" type="text" name="quantity[]" placeholder="Quantity"></td>
-                            <td style="width: 15%"><input id="mattress_form_discount0" class="form-control discount" type="text" name="discount[]" placeholder="Percent%"></td>
-                            <td style="width: 25%"><button class="btn btn-danger btn-sm remove" style="width: 30px" type="button" name="mattress_line_remove"><span class="glyphicon glyphicon-minus"> - </span></button></td>
-                          </tr>
-                        </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-sm">
-                      <div class="row">
-                        <div class="col-sm-3">
-                        </div>
-                        <div class= "col-sm-9">
-                          <div class= "row">
-                            <div class= "col-sm-8">  
-                               <label> Payment Towards Invoice </label>
-                            </div>
-                            <div class= "col-sm-4">
-                                <label>  Date of Payment   </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class= "row">
-                        <div class="col-sm-3">
-                        </div>
-                        <div class= "col-sm-9">
-                          <div class= "row">
-                            <div class= "col-sm-8">  
-                              <div class="form-group">
-                                <input type="text"  class="form-control amount" id="mattress_form_amount"  name="amount" placeholder="Ksh 0000.00">
-                              </div>
-                            </div>
-                            <div class= "col-sm-4">
-                              <div class="form-group">
-                                <div class="input-group">
-                                  <div class="input-group-prepend">
-                                    <span class="input-group-text">
-                                      <i class="far fa-calendar-alt"></i>
-                                    </span>
-                                  </div>
-                                    <input type="text" class="form-control float-right date" id="mattress_form_date" name="date" placeholder="01-JAN-2000">
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-footer ">
-                  <button class="btn btn-info submit" type="submit" id="mattress_form_submit" name="submit">Submit Invoice</button>
-                  <br>
-                  <br>
-                  <p class="mattress_form_message" id="message" name="message" ></p>
-                </div>
-              </form>
+            <!-- left column -->
+            <div class="col-sm-2">
             </div>
-            <!-- /.card -->
-          </div>
-          <div class="col-sm-2">
-          </div>
-          <!--/.col (right) -->
+            <div class="col-sm-8">
+                <!-- general form elements -->
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">Create Invoice Form</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <form method="POST" id="invoice_add_form">
+                        <div class= "card-body">       
+                            <div class= "row-sm">
+                            <div class="col-sm">
+                              <div class="table-fixed">
+                                  <span id="error"></span>
+                                  <table class="table table-borderless" id="invoice_table">
+                                      <tbody>
+                                      <tr>
+                                      <th style="width: 45%">
+                                      <label>Invoice Customer</label>
+                                      </th>
+                                      </tr>
+                                      <tr>
+                                      <td style="width: 45%">
+                                      <select id=customer_id name="customer_id" class="form-control customer_id">
+                                      <option value="">--Select Shop Name--</option>
+                                      <?php
+                                      $connection = Connection::getInstance();
+                                      $conn = $connection->getConn();
+                                      $sql = "SELECT * FROM customer ORDER by first ASC";
+                                      $result = $conn->query($sql);
+                                      
+                                      if ($result->num_rows > 0) {       
+                                      
+                                      while($row = $result->fetch_assoc()) {
+                                      echo "<option value=" . $row['customer_id'] . ">" . $row['shop_name'] . "</option>";
+                                      }   
+                                      }
+                                      ?>
+                                      </select>
+                                      </td>
+                                      </tr>
+                                      <tr>
+                                      <th style="width: 55%">Mattress Name</th>
+                                      <th style="width: 25%">Quantity</th>
+                                      <th style="width: 25%">Discount%</th>
+                                      <th style="width: 15%" ><button type="button" style="width: 30px" id="mattress_line_add" name="add" class="btn btn-success btn-sm add"><span class="glyphicon glyphicon-plus"> + </span></button></th>
+                                      </tr>
+                                      <tr>
+                                      <td style="width: 55%">
+                                      <select id=mattress_form_id0 name="mattress_id[]" class="form-control mattress_id">
+                                      <option value="">--Select Mattress--</option>
+                                      <?php
+                                      $connection = Connection::getInstance();
+                                      $conn = $connection->getConn();
+                                      $sql = "SELECT * FROM mattress where active = 1 ORDER by type ASC, size ASC";
+                                      $result = $conn->query($sql);
+                                      
+                                      if ($result->num_rows > 0) {       
+                                      
+                                      while($row = $result->fetch_assoc()) {
+                                      $price = number_format($row['price'], 2, '.', ',');
+                                      echo "<option value=" . $row['mattress_id'] . ">". $row['size']. " " . $row['type'] . " Ksh" . $price . "</option>";
+                                      }   
+                                      }
+                                      ?>
+                                      </td>
+                                      <td style="width: 25%"><input id="mattress_form_quantity0" class="form-control quantity" type="text" name="quantity[]" placeholder="Quantity"></td>
+                                      <td style="width: 25%"><input id="mattress_form_discount0" class="form-control discount" type="text" name="discount[]" placeholder="Percent%"></td>
+                                      <td style="width: 15%"><button class="btn btn-danger btn-sm remove" style="width: 30px" type="button" name="mattress_line_remove"><span class="glyphicon glyphicon-minus"> - </span></button></td>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+                              </div>
+                              <!---above closed is table fixed-->
+                
+                             
+                              <div class="row">
+                              <div class="col-sm">
+                              
+                                  <div class="row">
+                                      <div class="col-sm-6">
+                                          <div class="row">
+                                              <div class= "col-sm">
+                                                  <div class= "row-sm">
+                                                      <div class= "col-sm">  
+                                                      <label> Payment Towards Invoice </label>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <div class= "row">
+                                              <div class= "col-sm">
+                                                  <div class= "row-sm">
+                                                      <div class= "col-sm">  
+                                                          <div class="form-group">
+                                                          <input type="text"  class="form-control amount" id="mattress_form_amount"  name="amount" placeholder="Ksh 0000.00">
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class= "col-sm-6">
+                                          <div class= "row-sm">
+                                              <div class= "col-sm">
+                                                  <label>  Date of Payment   </label>
+                                              </div>
+                                          </div>
+                                          <div class= "row">
+                                              <div class= "col-sm">
+                                                  <div class="form-group">
+                                                      <div class="input-group">
+                                                          <div class="input-group-prepend">
+                                                            <span class="input-group-text">
+                                                            <i class="far fa-calendar-alt"></i>
+                                                            </span>
+                                                            <input type="text" class="form-control float-right date" id="mattress_form_date" name="date" placeholder="01-JAN-2000">
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              
+                              </div>
+                              </div>
+                            </div>
+                            </div>
+                        </div>
+                        <!---above closed is second card body-->
+                
+                        
+                        <!---above closed is card body-->
+                        <div class="card-footer ">
+                          <button class="btn btn-info submit" type="submit" id="mattress_form_submit" name="submit">Submit Invoice</button>
+                          <br>
+                          <br>
+                          <p class="mattress_form_message" id="message" name="message" ></p>
+                        </div>
+                    </form>
+                </div>
+                <!-- /above is card which form is in -->
+            </div>
+            <!-- /above is end of column which holds the card -->
+            <div class="col-sm-2">
+            </div>
+            <!--/.col (right) -->
         </div>
-        <!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </section>
+        <!-- /.above is end of row under container fluid -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
