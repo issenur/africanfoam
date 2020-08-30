@@ -107,6 +107,16 @@
           </li>
         </ul>
       </nav>
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item">
+            <a href="logout.php" class="nav-link" style="background-color:red;color: white">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Log out</p>
+            </a>
+          </li>
+        </ul>
+      </nav>
       <!-- /.sidebar-menu -->
       <!-- /.sidebar-menu -->
     </div>
